@@ -1,0 +1,31 @@
+[package]
+name = "ghlog"
+version = "0.1.0-alpha.1"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/dhth/ghlog"
+description = "view a GitHub user's recent public activity"
+homepage = "https://github.com/dhth/ghlog"
+keywords = [
+    "cli",
+    "github",
+]
+categories = [
+    "command-line-utilities",
+]
+exclude = [
+    ".github",
+    "justfile",
+]
+
+[dependencies]
+anyhow = "1.0.102"
+chrono = { version = "0.4.44", default-features = false, features = ["std", "clock", "serde"] }
+clap = { version = "4.6.1", features = ["derive"] }
+reqwest = { version = "0.13.3", default-features = false, features = ["blocking", "query", "rustls"] }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.150"
+
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
