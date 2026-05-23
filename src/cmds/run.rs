@@ -12,9 +12,7 @@ pub fn handle(username: &Username, limit: EventLimit) -> anyhow::Result<()> {
     for event in &events {
         let line = format_event(event, &reference_time);
 
-        if !line.is_empty() {
-            println!("{line}");
-        }
+        println!("{line}");
     }
 
     Ok(())
@@ -63,7 +61,6 @@ fn format_event(event: &Event, reference_time: &DateTime<Utc>) -> String {
                 release_event.action, release_kind, release_event.release.tag_name, event.repo.name,
             )
         }
-        EventPayload::Unknown(_) => return String::new(),
     };
 
     format!("{relative_time:<13} {event_text}")
