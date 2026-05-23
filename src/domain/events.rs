@@ -32,53 +32,6 @@ pub struct Event {
 }
 
 #[derive(Debug, Deserialize)]
-struct RawEvent {
-    id: String,
-    #[serde(rename = "type")]
-    event_type: Option<String>,
-    repo: Repo,
-    payload: serde_json::Value,
-    created_at: DateTime<Utc>,
-}
-
-impl<'de> Deserialize<'de> for Event {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let raw = RawEvent::deserialize(deserializer)?;
-        let payload = match raw.event_type.as_deref() {
-            Some("PushEvent") => serde_json::from_value(raw.payload)
-                .map(EventPayload::Push)
-                .map_err(serde::de::Error::custom)?,
-            Some("CreateEvent") => serde_json::from_value(raw.payload)
-                .map(EventPayload::Create)
-                .map_err(serde::de::Error::custom)?,
-            Some("DeleteEvent") => serde_json::from_value(raw.payload)
-                .map(EventPayload::Delete)
-                .map_err(serde::de::Error::custom)?,
-            Some("IssueCommentEvent") => serde_json::from_value(raw.payload)
-                .map(EventPayload::IssueComment)
-                .map_err(serde::de::Error::custom)?,
-            Some("PullRequestEvent") => serde_json::from_value(raw.payload)
-                .map(EventPayload::PullRequest)
-                .map_err(serde::de::Error::custom)?,
-            Some("ReleaseEvent") => serde_json::from_value(raw.payload)
-                .map(EventPayload::Release)
-                .map_err(serde::de::Error::custom)?,
-            _ => EventPayload::Unknown(raw.payload),
-        };
-
-        Ok(Self {
-            id: raw.id,
-            repo: raw.repo,
-            payload,
-            created_at: raw.created_at,
-        })
-    }
-}
-
-#[derive(Debug, Deserialize)]
 pub struct Repo {
     pub name: String,
     pub url: String,
@@ -98,7 +51,6 @@ pub enum EventPayload {
     IssueComment(IssueCommentEvent),
     PullRequest(PullRequestEvent),
     Release(ReleaseEvent),
-    Unknown(serde_json::Value),
 }
 
 #[derive(Debug, Deserialize)]
