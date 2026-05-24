@@ -10,10 +10,18 @@ use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OutputFormat {
+    Html { template: HtmlTemplate },
+    Markdown,
     Plain,
     Terminal,
-    Markdown,
-    Html,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum HtmlTemplate {
+    Editorial,
+    Notebook,
+    Terminal,
+    Zine,
 }
 
 pub fn render(
@@ -23,7 +31,9 @@ pub fn render(
     username: &Username,
 ) -> anyhow::Result<String> {
     let output = match format {
-        OutputFormat::Html => html::render(events, reference_time, username)?,
+        OutputFormat::Html { template } => {
+            html::render(events, reference_time, template, username)?
+        }
         OutputFormat::Markdown => markdown::render(events),
         OutputFormat::Plain => plain::render(events, reference_time),
         OutputFormat::Terminal => terminal::render(events, reference_time),

@@ -20,13 +20,32 @@ pub enum Command {
         /// Output format
         #[arg(short='o', long = "output", value_enum, default_value_t = OutputFormat::Terminal)]
         output: OutputFormat,
+        /// HTML template to use
+        #[arg(long = "html-template", value_enum, default_value_t = HtmlTemplate::Terminal)]
+        html_template: HtmlTemplate,
     },
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
 pub enum OutputFormat {
-    Plain,
-    Terminal,
-    Markdown,
+    /// HTML document
     Html,
+    /// Markdown list with links
+    Markdown,
+    /// Plain unstyled text
+    Plain,
+    /// ANSI-colored text with links
+    Terminal,
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum HtmlTemplate {
+    /// Serif typography with a magazine-style layout
+    Editorial,
+    /// Handwritten typography on a dotted-paper background
+    Notebook,
+    /// Monospaced layout resembling a terminal window
+    Terminal,
+    /// Sans-serif display type with colored labels per event kind
+    Zine,
 }

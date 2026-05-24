@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark light">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔭</text></svg>">
+    <title>{{ title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f4f4f1;
+            --ink: #111111;
+            --dim: #6b6b6b;
+            --rule: #111111;
+            --accent: #e63946;
+            --push: #1f6feb;
+            --create: #1a7f37;
+            --delete: #cf222e;
+            --issue-comment: #b08800;
+            --pull-request: #8250df;
+            --release: #1a7f37;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #111111;
+                --ink: #f4f4f1;
+                --dim: #8a8a85;
+                --rule: #f4f4f1;
+                --accent: #ff5566;
+                --push: #79c0ff;
+                --create: #7ee787;
+                --delete: #ff7b72;
+                --issue-comment: #f0b72f;
+                --pull-request: #d2a8ff;
+                --release: #7ee787;
+            }
+        }
+        * { box-sizing: border-box; }
+        html, body { background: var(--bg); }
+        body {
+            margin: 0;
+            color: var(--ink);
+            font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            font-feature-settings: "tnum" 1, "cv11" 1;
+        }
+        a {
+            color: inherit;
+            text-decoration: underline;
+            text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+            text-underline-offset: 3px;
+        }
+        a:hover { color: var(--accent); text-decoration-color: var(--accent); }
+
+        .page {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 3rem;
+        }
+
+        .head {
+            border-bottom: 2px solid var(--rule);
+            padding-bottom: 0.85rem;
+            margin-bottom: 1.75rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: end;
+            gap: 1rem;
+        }
+        .head h1 {
+            margin: 0;
+            font-weight: 900;
+            font-size: clamp(1.5rem, 3.6vw, 2.4rem);
+            line-height: 1;
+            letter-spacing: -0.03em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .head h1 a { text-decoration: none; color: var(--accent); }
+        .head h1 a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+        .head .meta {
+            font-size: 0.7rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--dim);
+            white-space: nowrap;
+        }
+
+        ul.list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .row {
+            display: grid;
+            grid-template-columns: 7rem 8rem 1fr;
+            gap: 1.25rem;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid color-mix(in srgb, var(--rule) 15%, transparent);
+            align-items: baseline;
+        }
+        .row:last-child { border-bottom: none; }
+        .row .ts {
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--dim);
+        }
+        .row .msg {
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+        .kind {
+            display: inline-block;
+            font-size: 0.65rem;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent);
+            border-left: 3px solid currentColor;
+            padding-left: 0.5rem;
+        }
+        .event-push          .kind { color: var(--push); }
+        .event-create        .kind { color: var(--create); }
+        .event-delete        .kind { color: var(--delete); }
+        .event-issue-comment .kind { color: var(--issue-comment); }
+        .event-pull-request  .kind { color: var(--pull-request); }
+        .event-release       .kind { color: var(--release); }
+
+        .foot {
+            margin-top: 2rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid color-mix(in srgb, var(--rule) 25%, transparent);
+            font-size: 0.78rem;
+            color: var(--dim);
+            text-align: right;
+        }
+        .foot a { color: var(--accent); }
+
+        @media (max-width: 640px) {
+            .page { padding: 1.5rem 1.1rem 2rem; }
+            .head { grid-template-columns: 1fr; gap: 0.4rem; }
+            .row { grid-template-columns: 1fr; gap: 0.2rem; }
+            .kind { border-left: none; padding-left: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <header class="head">
+            <h1><a href="{{ user_url }}" target="_blank" rel="noopener noreferrer">@{{ username }}</a>'s recent activity</h1>
+            <div class="meta">{{ timestamp }}</div>
+        </header>
+        <main>
+            <ul class="list">
+                {%- for event in events %}
+                <li class="row event-{{ event.event_kind }}">
+                    <span class="ts">{{ event.timestamp }}</span>
+                    <span class="kind">{{ event.event_kind }}</span>
+                    <span class="msg">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
+                </li>
+                {%- endfor %}
+            </ul>
+        </main>
+        <div class="foot">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
+    </div>
+</body>
+</html>

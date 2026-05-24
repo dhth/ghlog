@@ -1,6 +1,6 @@
 use crate::domain::events::EventLimit;
 use crate::domain::user::Username;
-use crate::output::OutputFormat;
+use crate::output::{HtmlTemplate, OutputFormat};
 
 pub enum Command {
     Run {
@@ -19,10 +19,11 @@ impl TryFrom<crate::cli::Command> for Command {
                 username,
                 limit,
                 output,
+                html_template,
             } => Ok(Self::Run {
                 username: Username::try_from(username)?,
                 limit: EventLimit::try_from(limit)?,
-                output_format: output.into(),
+                output_format: OutputFormat::from_cli(output, html_template),
             }),
         }
     }
@@ -40,13 +41,26 @@ impl Command {
     }
 }
 
-impl From<crate::cli::OutputFormat> for OutputFormat {
-    fn from(value: crate::cli::OutputFormat) -> Self {
-        match value {
+impl OutputFormat {
+    fn from_cli(output: crate::cli::OutputFormat, html_template: crate::cli::HtmlTemplate) -> Self {
+        match output {
+            crate::cli::OutputFormat::Html => Self::Html {
+                template: HtmlTemplate::from(html_template),
+            },
+            crate::cli::OutputFormat::Markdown => Self::Markdown,
             crate::cli::OutputFormat::Plain => Self::Plain,
             crate::cli::OutputFormat::Terminal => Self::Terminal,
-            crate::cli::OutputFormat::Markdown => Self::Markdown,
-            crate::cli::OutputFormat::Html => Self::Html,
+        }
+    }
+}
+
+impl From<crate::cli::HtmlTemplate> for HtmlTemplate {
+    fn from(value: crate::cli::HtmlTemplate) -> Self {
+        match value {
+            crate::cli::HtmlTemplate::Editorial => Self::Editorial,
+            crate::cli::HtmlTemplate::Notebook => Self::Notebook,
+            crate::cli::HtmlTemplate::Terminal => Self::Terminal,
+            crate::cli::HtmlTemplate::Zine => Self::Zine,
         }
     }
 }
