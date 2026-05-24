@@ -72,33 +72,24 @@ impl From<&Event> for EventPresentation {
                     link(&event.repo.name, event.repo.html_url()),
                 ],
             },
-            EventPayload::Create(create) => {
-                let target = format_ref_target(&create.ref_type, create.ref_name());
-                let target_part = link(target, event.repo.url_for(&create.ref_path()));
-
-                Self {
-                    kind: EventKind::Create,
-                    fragments: vec![
-                        text("created "),
-                        target_part,
-                        text(" in "),
-                        link(&event.repo.name, event.repo.html_url()),
-                    ],
-                }
-            }
-            EventPayload::Delete(delete) => {
-                let target = format_ref_target(&delete.ref_type, delete.ref_name());
-
-                Self {
-                    kind: EventKind::Delete,
-                    fragments: vec![
-                        text("deleted "),
-                        text(target),
-                        text(" in "),
-                        link(&event.repo.name, event.repo.html_url()),
-                    ],
-                }
-            }
+            EventPayload::Create(create) => Self {
+                kind: EventKind::Create,
+                fragments: vec![
+                    text(format!("created {} ", create.ref_type)),
+                    link(create.ref_name(), event.repo.url_for(&create.ref_path())),
+                    text(" in "),
+                    link(&event.repo.name, event.repo.html_url()),
+                ],
+            },
+            EventPayload::Delete(delete) => Self {
+                kind: EventKind::Delete,
+                fragments: vec![
+                    text(format!("deleted {} ", delete.ref_type)),
+                    text(delete.ref_name()),
+                    text(" in "),
+                    link(&event.repo.name, event.repo.html_url()),
+                ],
+            },
             EventPayload::IssueComment(issue_comment) => Self {
                 kind: EventKind::IssueComment,
                 fragments: vec![
@@ -169,14 +160,6 @@ fn release_kind(release_event: &ReleaseEvent) -> &'static str {
 
 fn shorten_commit_hash(hash: &str) -> &str {
     hash.get(..7).unwrap_or(hash)
-}
-
-fn format_ref_target(ref_type: &str, ref_name: &str) -> String {
-    if ref_name.is_empty() {
-        ref_type.to_string()
-    } else {
-        format!("{ref_type} {ref_name}")
-    }
 }
 
 pub fn humanized_date(dt: &DateTime<Utc>, reference: &DateTime<Utc>) -> String {

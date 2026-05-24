@@ -18,11 +18,7 @@ fn render_event(event: &Event) -> String {
 }
 
 fn render_presentation(presentation: &EventPresentation) -> String {
-    presentation
-        .fragments
-        .iter()
-        .map(render_fragment)
-        .collect()
+    presentation.fragments.iter().map(render_fragment).collect()
 }
 
 fn render_fragment(part: &Fragment) -> String {
