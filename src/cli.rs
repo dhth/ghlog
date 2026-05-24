@@ -18,7 +18,7 @@ pub enum Command {
         #[arg(short = 'l', long = "limit", default_value_t = 20)]
         limit: usize,
         /// Output format
-        #[arg(long = "output", value_enum, default_value_t = OutputFormat::Plain)]
+        #[arg(short='o', long = "output", value_enum, default_value_t = OutputFormat::Terminal)]
         output: OutputFormat,
     },
 }
@@ -26,5 +26,6 @@ pub enum Command {
 #[derive(Clone, Copy, Debug, ValueEnum)]
 pub enum OutputFormat {
     Plain,
+    Terminal,
     Markdown,
 }

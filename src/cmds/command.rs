@@ -44,6 +44,7 @@ impl From<crate::cli::OutputFormat> for OutputFormat {
     fn from(value: crate::cli::OutputFormat) -> Self {
         match value {
             crate::cli::OutputFormat::Plain => Self::Plain,
+            crate::cli::OutputFormat::Terminal => Self::Terminal,
             crate::cli::OutputFormat::Markdown => Self::Markdown,
         }
     }

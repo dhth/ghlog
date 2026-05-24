@@ -2,7 +2,7 @@ use super::presentation::{EventPresentation, humanized_date};
 use crate::domain::events::Event;
 use chrono::{DateTime, Utc};
 
-pub(super) fn render(events: &[Event], reference_time: DateTime<Utc>) -> String {
+pub fn render(events: &[Event], reference_time: DateTime<Utc>) -> String {
     events
         .iter()
         .map(|event| format_event(event, &reference_time))

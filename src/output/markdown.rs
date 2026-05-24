@@ -1,7 +1,7 @@
 use super::presentation::{EventPresentation, Fragment};
 use crate::domain::events::Event;
 
-pub(super) fn render(events: &[Event]) -> String {
+pub fn render(events: &[Event]) -> String {
     events
         .iter()
         .map(render_event)
@@ -21,11 +21,11 @@ fn render_presentation(presentation: &EventPresentation) -> String {
     presentation
         .fragments
         .iter()
-        .map(render_text_part)
+        .map(render_fragment)
         .collect()
 }
 
-fn render_text_part(part: &Fragment) -> String {
+fn render_fragment(part: &Fragment) -> String {
     match &part.url {
         Some(url) => format!("[{}]({})", part.text, url),
         None => part.text.clone(),

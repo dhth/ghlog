@@ -7,6 +7,16 @@ pub struct Fragment {
 }
 
 #[derive(Clone, Copy)]
+pub enum Color {
+    Gray,
+    Blue,
+    Green,
+    Yellow,
+    Purple,
+    Red,
+}
+
+#[derive(Clone, Copy)]
 pub enum EventKind {
     Push,
     Create,
@@ -25,6 +35,17 @@ impl EventKind {
             Self::IssueComment => "💬",
             Self::PullRequest => "🔀",
             Self::Release => "📦",
+        }
+    }
+
+    pub fn color(self) -> Color {
+        match self {
+            Self::Push => Color::Blue,
+            Self::Create => Color::Green,
+            Self::Delete => Color::Red,
+            Self::IssueComment => Color::Yellow,
+            Self::PullRequest => Color::Purple,
+            Self::Release => Color::Green,
         }
     }
 }
