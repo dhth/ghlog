@@ -12,6 +12,8 @@ const BUILTIN_TEMPLATE: &str = include_str!("./assets/templates/index.html");
 #[derive(Serialize)]
 struct HtmlContext {
     title: String,
+    username: String,
+    user_url: String,
     timestamp: String,
     events: Vec<HtmlEvent>,
 }
@@ -39,8 +41,10 @@ pub fn render(
         .context("failed to parse built-in HTML template")?;
 
     let tera_context = TeraContext::from_serialize(HtmlContext {
-        title: format!("@{}'s recent activity on GitHub", username.as_str()),
-        timestamp: reference_time.format("%Y-%m-%d %H:%M UTC").to_string(),
+        title: format!("@{} recent activity", username.as_str()),
+        username: username.as_str().to_owned(),
+        user_url: format!("https://github.com/{}", username.as_str()),
+        timestamp: reference_time.format("%-d %b %Y · %H:%M UTC").to_string(),
         events: events.iter().map(HtmlEvent::from).collect(),
     })
     .context("failed to build HTML context")?;
@@ -54,7 +58,7 @@ impl From<&Event> for HtmlEvent {
         let presentation = EventPresentation::from(event);
 
         Self {
-            timestamp: event.created_at.format("%Y-%m-%d %H:%M UTC").to_string(),
+            timestamp: event.created_at.format("%-d %b %Y · %H:%M UTC").to_string(),
             event_kind: presentation.kind.name(),
             fragments: presentation
                 .fragments

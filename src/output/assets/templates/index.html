@@ -126,6 +126,14 @@
         .event-pull-request { color: var(--purple); }
         .event-release { color: var(--green); }
 
+        .page-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 640px) {
             .page {
                 width: min(100vw - 1rem, 920px);
@@ -149,7 +157,7 @@
 <body>
     <div class="page">
         <header class="page-header">
-            <h1 class="page-title">{{ title }}</h1>
+            <h1 class="page-title"><a href="{{ user_url }}" target="_blank" rel="noopener noreferrer">@{{ username }}</a> recent activity</h1>
             <div class="page-timestamp">Generated at {{ timestamp }}</div>
         </header>
 
@@ -162,6 +170,8 @@
                 {%- endfor %}
             </ul>
         </main>
+
+        <footer class="page-footer">Built using <a href="https://github.com/dhth/ghlog" target="_blank" rel="noopener noreferrer">ghlog</a></footer>
     </div>
 </body>
 </html>
