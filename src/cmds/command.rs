@@ -46,6 +46,7 @@ impl From<crate::cli::OutputFormat> for OutputFormat {
             crate::cli::OutputFormat::Plain => Self::Plain,
             crate::cli::OutputFormat::Terminal => Self::Terminal,
             crate::cli::OutputFormat::Markdown => Self::Markdown,
+            crate::cli::OutputFormat::Html => Self::Html,
         }
     }
 }

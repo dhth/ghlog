@@ -1,9 +1,11 @@
+mod html;
 mod markdown;
 mod plain;
 mod presentation;
 mod terminal;
 
 use crate::domain::events::Event;
+use crate::domain::user::Username;
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -11,12 +13,21 @@ pub enum OutputFormat {
     Plain,
     Terminal,
     Markdown,
+    Html,
 }
 
-pub fn render(events: &[Event], reference_time: DateTime<Utc>, format: OutputFormat) -> String {
-    match format {
+pub fn render(
+    events: &[Event],
+    reference_time: DateTime<Utc>,
+    format: OutputFormat,
+    username: &Username,
+) -> anyhow::Result<String> {
+    let output = match format {
+        OutputFormat::Html => html::render(events, reference_time, username)?,
+        OutputFormat::Markdown => markdown::render(events),
         OutputFormat::Plain => plain::render(events, reference_time),
         OutputFormat::Terminal => terminal::render(events, reference_time),
-        OutputFormat::Markdown => markdown::render(events),
-    }
+    };
+
+    Ok(output)
 }

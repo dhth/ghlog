@@ -2,6 +2,7 @@ use crate::domain::events::EventLimit;
 use crate::domain::user::Username;
 use crate::output::{self, OutputFormat};
 use crate::service::github::GithubService;
+use anyhow::Context;
 use chrono::Utc;
 
 pub fn handle(
@@ -17,7 +18,8 @@ pub fn handle(
         return Ok(());
     }
 
-    let rendered_output = output::render(&events, Utc::now(), output_format);
+    let rendered_output = output::render(&events, Utc::now(), output_format, username)
+        .context("couldn't generate output to be rendered")?;
 
     println!("{rendered_output}");
 

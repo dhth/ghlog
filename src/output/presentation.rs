@@ -27,6 +27,17 @@ pub enum EventKind {
 }
 
 impl EventKind {
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Push => "push",
+            Self::Create => "create",
+            Self::Delete => "delete",
+            Self::IssueComment => "issue-comment",
+            Self::PullRequest => "pull-request",
+            Self::Release => "release",
+        }
+    }
+
     pub fn emoji(self) -> &'static str {
         match self {
             Self::Push => "⬆️",

@@ -28,4 +28,5 @@ pub enum OutputFormat {
     Plain,
     Terminal,
     Markdown,
+    Html,
 }
