@@ -1,9 +1,14 @@
 use crate::domain::events::{Event, EventLimit, EventPayload};
 use crate::domain::user::Username;
+use crate::output::OutputFormat;
 use crate::service::github::GithubService;
 use chrono::{DateTime, Utc};
 
-pub fn handle(username: &Username, limit: EventLimit) -> anyhow::Result<()> {
+pub fn handle(
+    username: &Username,
+    limit: EventLimit,
+    _output_format: OutputFormat,
+) -> anyhow::Result<()> {
     let token = crate::auth::get_token()?;
     let service = GithubService::new(token)?;
     let events = service.get_public_events_for_user(username, limit)?;

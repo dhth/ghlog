@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, ValueEnum};
 
 /// ghlog lets you view a GitHub user's recent public activity
 #[derive(Parser, Debug)]
@@ -17,5 +17,14 @@ pub enum Command {
         /// Maximum number of events to show
         #[arg(short = 'l', long = "limit", default_value_t = 20)]
         limit: usize,
+        /// Output format
+        #[arg(long = "output", value_enum, default_value_t = OutputFormat::Plain)]
+        output: OutputFormat,
     },
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum OutputFormat {
+    Plain,
+    Markdown,
 }

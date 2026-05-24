@@ -2,6 +2,7 @@ mod auth;
 mod cli;
 mod cmds;
 mod domain;
+mod output;
 mod service;
 
 use clap::Parser;
