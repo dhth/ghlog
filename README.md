@@ -5,9 +5,9 @@
   </p>
 </p>
 
-`ghlog` lets you view a GitHub user's recent public activity.
+`ghlog` lets you view a GitHub user's recent activity.
 
-> View a demo of `ghlog`'s output [here][1].
+> View a demo of `ghlog`'s output [here][activity].
 
 > [!NOTE]
 > ghlog is alpha software. Its interface and behavior might change in the near
@@ -16,10 +16,10 @@
 🤔 Motivation
 ---
 
-I sometimes need a quick and easy way to get to the last few things I recently
-worked on on GitHub. Sadly, GitHub doesn't really offer a good UI for this. As
-such, I built a simple tool for this. Besides my own activity, I sometimes use
-it to keep up with what other people I follow are working on.
+I sometimes need a quick and easy way to get to the last few things I worked on
+on GitHub. Sadly, GitHub doesn't really offer a good UI for this. As such, I
+built a simple tool for this. Besides my own activity, I sometimes use it to
+keep up with what other people I follow are working on.
 
 💾 Installation
 ---
@@ -66,11 +66,44 @@ Options:
 
 `ghlog` offers 4 built-in templates for the HTML output.
 
-| template  | description                                                |
-|-----------|------------------------------------------------------------|
-| editorial | Serif typography with a magazine-style layout              |
-| notebook  | Handwritten typography on a dotted-paper background        |
-| terminal  | Monospaced layout resembling a terminal window             |
-| zine      | Sans-serif display type with colored labels per event kind |
+#### Editorial
 
-[1]: https://dhth.github.io/activity/
+Serif typography with a magazine-style layout.
+
+| Dark                      | Light                      |
+| ------------------------- | -------------------------- |
+| ![output][editorial-dark] | ![output][editorial-light] |
+
+#### Notebook
+
+Handwritten typography on a dotted-paper background.
+
+| Dark                     | Light                     |
+| ------------------------ | ------------------------- |
+| ![output][notebook-dark] | ![output][notebook-light] |
+
+#### Terminal
+
+Monospaced layout resembling a terminal window.
+
+| Dark                     | Light                     |
+| ------------------------ | ------------------------- |
+| ![output][terminal-dark] | ![output][terminal-light] |
+
+#### Zine
+
+Sans-serif display type with colored labels per event kind.
+
+| Dark                 | Light                 |
+| -------------------- | --------------------- |
+| ![output][zine-dark] | ![output][zine-light] |
+
+[activity]: https://dhth.github.io/activity/
+[editorial-dark]: https://tools.dhruvs.space/images/ghlog/v0-1-0/editorial-dark.png
+[editorial-light]: https://tools.dhruvs.space/images/ghlog/v0-1-0/editorial-light.png
+[notebook-dark]: https://tools.dhruvs.space/images/ghlog/v0-1-0/notebook-dark.png
+[notebook-light]: https://tools.dhruvs.space/images/ghlog/v0-1-0/notebook-light.png
+[terminal-dark]: https://tools.dhruvs.space/images/ghlog/v0-1-0/terminal-dark.png
+[terminal-light]: https://tools.dhruvs.space/images/ghlog/v0-1-0/terminal-light.png
+[zine-dark]: https://tools.dhruvs.space/images/ghlog/v0-1-0/zine-dark.png
+[zine-light]: https://tools.dhruvs.space/images/ghlog/v0-1-0/zine-light.png
