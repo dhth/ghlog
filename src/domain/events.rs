@@ -56,6 +56,7 @@ pub enum EventPayload {
     Create(CreateEvent),
     Delete(DeleteEvent),
     IssueComment(IssueCommentEvent),
+    Issues(IssuesEvent),
     PullRequest(PullRequestEvent),
     Release(ReleaseEvent),
 }
@@ -113,14 +114,20 @@ impl DeleteEvent {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct IssuesEvent {
+    pub action: String,
+    pub issue: Issue,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct IssueCommentEvent {
     pub action: String,
-    pub issue: IssueCommentIssue,
+    pub issue: Issue,
     pub comment: IssueCommentComment,
 }
 
 #[derive(Debug, Deserialize)]
-pub struct IssueCommentIssue {
+pub struct Issue {
     pub number: u64,
     pub html_url: String,
 }
