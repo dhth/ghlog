@@ -41,6 +41,10 @@ impl Repo {
     pub fn html_url(&self) -> String {
         format!("https://github.com/{}", self.name)
     }
+
+    pub fn url_for(&self, path: &str) -> String {
+        format!("{}/{}", self.html_url(), path)
+    }
 }
 
 #[derive(Debug)]
@@ -61,6 +65,20 @@ pub struct PushEvent {
     pub before: String,
 }
 
+impl PushEvent {
+    pub fn ref_name(&self) -> &str {
+        strip_git_ref_prefix(&self.git_ref)
+    }
+
+    pub fn ref_path(&self) -> String {
+        format!("tree/{}", self.ref_name())
+    }
+
+    pub fn commit_path(&self) -> String {
+        format!("commit/{}", self.head)
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct CreateEvent {
     #[serde(rename = "ref")]
@@ -68,11 +86,27 @@ pub struct CreateEvent {
     pub ref_type: String,
 }
 
+impl CreateEvent {
+    pub fn ref_name(&self) -> &str {
+        strip_git_ref_prefix(&self.git_ref)
+    }
+
+    pub fn ref_path(&self) -> String {
+        format!("tree/{}", self.ref_name())
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct DeleteEvent {
     #[serde(rename = "ref")]
     pub git_ref: String,
     pub ref_type: String,
+}
+
+impl DeleteEvent {
+    pub fn ref_name(&self) -> &str {
+        strip_git_ref_prefix(&self.git_ref)
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -104,6 +138,12 @@ pub struct PullRequest {
     pub number: u64,
 }
 
+impl PullRequest {
+    pub fn path(&self) -> String {
+        format!("pull/{}", self.number)
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct ReleaseEvent {
     pub action: String,
@@ -116,4 +156,11 @@ pub struct Release {
     pub tag_name: String,
     pub prerelease: bool,
     pub draft: bool,
+}
+
+fn strip_git_ref_prefix(git_ref: &str) -> &str {
+    git_ref
+        .strip_prefix("refs/heads/")
+        .or_else(|| git_ref.strip_prefix("refs/tags/"))
+        .unwrap_or(git_ref)
 }
