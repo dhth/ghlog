@@ -3,9 +3,11 @@ use crate::domain::user::Username;
 use anyhow::{Context, ensure};
 use chrono::{DateTime, Utc};
 use reqwest::blocking::Client;
+use reqwest::header::{HeaderMap, LINK};
 use serde::Deserialize;
 
 const GITHUB_API_VERSION: &str = "2026-03-10";
+const GITHUB_API_MAX_PER_PAGE: usize = 100;
 
 #[derive(Debug, Deserialize)]
 struct RawEvent {
@@ -61,6 +63,12 @@ pub struct GithubService {
     token: String,
 }
 
+#[derive(Debug)]
+struct GithubPage {
+    events: Vec<Event>,
+    has_next_page: bool,
+}
+
 impl GithubService {
     pub fn new(token: String) -> anyhow::Result<Self> {
         let client = Client::builder()
@@ -76,6 +84,31 @@ impl GithubService {
         username: &Username,
         limit: EventLimit,
     ) -> anyhow::Result<Vec<Event>> {
+        let mut collected_events = Vec::new();
+        let mut page = 1;
+        loop {
+            let GithubPage {
+                events,
+                has_next_page,
+            } = self.fetch_public_events(username, page)?;
+            collected_events.extend(events);
+
+            if collected_events.len() >= limit.get() {
+                collected_events.truncate(limit.get());
+                break;
+            }
+
+            if !has_next_page {
+                break;
+            }
+
+            page += 1;
+        }
+
+        Ok(collected_events)
+    }
+
+    fn fetch_public_events(&self, username: &Username, page: usize) -> anyhow::Result<GithubPage> {
         let response = self
             .client
             .get(format!(
@@ -85,11 +118,12 @@ impl GithubService {
             .header("Accept", "application/vnd.github+json")
             .header("X-GitHub-Api-Version", GITHUB_API_VERSION)
             .bearer_auth(&self.token)
-            .query(&[("per_page", limit.get()), ("page", 1)])
+            .query(&[("per_page", GITHUB_API_MAX_PER_PAGE), ("page", page)])
             .send()
             .context("couldn't send HTTP request to GitHub")?;
 
         let status = response.status();
+        let has_next_page = next_page_exists(response.headers());
         let body = response
             .text()
             .context("couldn't get text from GitHub's response")?;
@@ -108,6 +142,109 @@ impl GithubService {
             }
         }
 
-        Ok(events)
+        Ok(GithubPage {
+            events,
+            has_next_page,
+        })
+    }
+}
+
+fn next_page_exists(headers: &HeaderMap) -> bool {
+    headers
+        .get(LINK)
+        .and_then(|value| value.to_str().ok())
+        .map(|value| {
+            value.split(',').map(str::trim).any(|entry| {
+                entry
+                    .split(';')
+                    .map(str::trim)
+                    .any(|part| part == "rel=\"next\"")
+            })
+        })
+        .unwrap_or(false)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use reqwest::header::HeaderValue;
+
+    #[test]
+    fn has_next_page_returns_false_when_link_header_is_absent() {
+        // GIVEN
+        let headers = HeaderMap::new();
+
+        // WHEN
+        let has_next_page = next_page_exists(&headers);
+
+        // THEN
+        assert!(!has_next_page);
+    }
+
+    #[test]
+    fn next_page_exists_returns_true_when_link_header_contains_next_relation() {
+        // GIVEN
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            LINK,
+            HeaderValue::from_static(
+                r#"<https://api.github.com/user/13575379/events?per_page=100&page=1>; rel="prev", <https://api.github.com/user/13575379/events?per_page=100&page=3>; rel="next", <https://api.github.com/user/13575379/events?per_page=100&page=3>; rel="last", <https://api.github.com/user/13575379/events?per_page=100&page=1>; rel="first""#,
+            ),
+        );
+
+        // WHEN
+        let has_next_page = next_page_exists(&headers);
+
+        // THEN
+        assert!(has_next_page);
+    }
+
+    #[test]
+    fn next_page_exists_returns_false_when_link_header_does_not_contain_next_relation() {
+        // GIVEN
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            LINK,
+            HeaderValue::from_static(
+                r#"<https://api.github.com/user/13575379/events?per_page=100&page=2>; rel="prev", <https://api.github.com/user/13575379/events?per_page=100&page=1>; rel="first""#
+            ),
+        );
+
+        // WHEN
+        let has_next_page = next_page_exists(&headers);
+
+        // THEN
+        assert!(!has_next_page);
+    }
+
+    #[test]
+    fn next_page_exists_returns_false_for_malformed_link_header() {
+        // GIVEN
+        let mut headers = HeaderMap::new();
+        headers.insert(LINK, HeaderValue::from_static("this is not a link header"));
+
+        // WHEN
+        let has_next_page = next_page_exists(&headers);
+
+        // THEN
+        assert!(!has_next_page);
+    }
+
+    #[test]
+    fn next_page_exists_returns_false_for_malformed_next_relation() {
+        // GIVEN
+        let mut headers = HeaderMap::new();
+        headers.insert(
+            LINK,
+            HeaderValue::from_static(
+                "<https://api.github.com/user/13575379/events?per_page=100&page=4>; rel next",
+            ),
+        );
+
+        // WHEN
+        let has_next_page = next_page_exists(&headers);
+
+        // THEN
+        assert!(!has_next_page);
     }
 }
