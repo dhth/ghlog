@@ -32,6 +32,7 @@ impl TryFrom<RawEvent> for Event {
             Some("PushEvent") => serde_json::from_value(raw.payload).map(EventPayload::Push),
             Some("CreateEvent") => serde_json::from_value(raw.payload).map(EventPayload::Create),
             Some("DeleteEvent") => serde_json::from_value(raw.payload).map(EventPayload::Delete),
+            Some("IssuesEvent") => serde_json::from_value(raw.payload).map(EventPayload::Issues),
             Some("IssueCommentEvent") => {
                 serde_json::from_value(raw.payload).map(EventPayload::IssueComment)
             }
