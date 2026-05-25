@@ -17,9 +17,9 @@ pub enum Command {
         /// Maximum number of events to show
         #[arg(short = 'l', long = "limit", default_value_t = 20)]
         limit: usize,
-        /// Output format
-        #[arg(short='o', long = "output", value_enum, default_value_t = OutputFormat::Terminal)]
-        output: OutputFormat,
+        /// Output format to use
+        #[arg(short='f', long = "format", value_enum, default_value_t = OutputFormat::Terminal)]
+        output_format: OutputFormat,
         /// HTML template to use
         #[arg(long = "html-template", value_enum, default_value_t = HtmlTemplate::Terminal)]
         html_template: HtmlTemplate,

@@ -18,12 +18,12 @@ impl TryFrom<crate::cli::Command> for Command {
             crate::cli::Command::Run {
                 username,
                 limit,
-                output,
+                output_format,
                 html_template,
             } => Ok(Self::Run {
                 username: Username::try_from(username)?,
                 limit: EventLimit::try_from(limit)?,
-                output_format: OutputFormat::from_cli(output, html_template),
+                output_format: OutputFormat::from_cli(output_format, html_template),
             }),
         }
     }
@@ -42,8 +42,8 @@ impl Command {
 }
 
 impl OutputFormat {
-    fn from_cli(output: crate::cli::OutputFormat, html_template: crate::cli::HtmlTemplate) -> Self {
-        match output {
+    fn from_cli(format: crate::cli::OutputFormat, html_template: crate::cli::HtmlTemplate) -> Self {
+        match format {
             crate::cli::OutputFormat::Html => Self::Html {
                 template: HtmlTemplate::from(html_template),
             },
