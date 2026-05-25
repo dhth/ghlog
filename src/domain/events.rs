@@ -17,7 +17,10 @@ impl TryFrom<usize> for EventLimit {
     type Error = anyhow::Error;
 
     fn try_from(value: usize) -> Result<Self, Self::Error> {
-        ensure!(value > 1, "limit must be greater than 1");
+        ensure!(
+            (1..=300).contains(&value),
+            "limit must be in the range [1, 300]"
+        );
 
         Ok(Self(value))
     }
