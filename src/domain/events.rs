@@ -107,10 +107,6 @@ impl DeleteEvent {
     pub fn ref_name(&self) -> &str {
         strip_git_ref_prefix(&self.git_ref)
     }
-
-    pub fn ref_path(&self) -> String {
-        format!("tree/{}", self.ref_name())
-    }
 }
 
 #[derive(Debug, Deserialize)]
