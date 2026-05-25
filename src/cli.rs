@@ -12,16 +12,16 @@ pub enum Command {
     /// Fetch and display events for a GitHub user
     #[command(name = "run")]
     Run {
-        /// GitHub username
+        /// GitHub username to run for
         username: String,
         /// Maximum number of events to show
         #[arg(short = 'l', long = "limit", default_value_t = 20)]
         limit: usize,
         /// Output format to use
-        #[arg(short='f', long = "format", value_enum, default_value_t = OutputFormat::Terminal)]
+        #[arg(short='f', long = "format", value_enum, value_name = "FORMAT", default_value_t = OutputFormat::Terminal)]
         output_format: OutputFormat,
         /// HTML template to use
-        #[arg(long = "html-template", value_enum, default_value_t = HtmlTemplate::Terminal)]
+        #[arg(long = "html-template", value_enum, value_name = "TEMPLATE", default_value_t = HtmlTemplate::Terminal)]
         html_template: HtmlTemplate,
     },
 }
