@@ -19,6 +19,14 @@
             --paper-line: #161616;
             --name-bg: #161616;
             --name-fg: #f7f3e9;
+            --event-push: #08d9d6;
+            --event-create: #c0f068;
+            --event-delete: #ff8a9b;
+            --event-issues: #ffd23f;
+            --event-issue-comment: #ffd23f;
+            --event-pull-request: #b288ff;
+            --event-pull-request-review: #b288ff;
+            --event-release: #c0f068;
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -30,6 +38,14 @@
                 --paper-line: #f7f3e9;
                 --name-bg: #08d9d6;
                 --name-fg: #161616;
+                --event-push: #08d9d6;
+                --event-create: #c0f068;
+                --event-delete: #ff8a9b;
+                --event-issues: #ffd23f;
+                --event-issue-comment: #ffd23f;
+                --event-pull-request: #b288ff;
+                --event-pull-request-review: #b288ff;
+                --event-release: #c0f068;
             }
         }
         * { box-sizing: border-box; }
@@ -110,7 +126,7 @@
             align-items: baseline;
         }
         .item:last-child { border-bottom: none; }
-        .tag {
+        .event-kind {
             font-family: "DM Mono", monospace;
             font-weight: 500;
             font-size: 0.7rem;
@@ -124,19 +140,19 @@
             justify-self: start;
             align-self: center;
         }
-        .event-push          .tag { background: var(--accent-2); }
-        .event-create        .tag { background: #c0f068; }
-        .event-delete        .tag { background: #ff8a9b; }
-        .event-issues        .tag { background: #ffd23f; }
-        .event-issue-comment .tag { background: #ffd23f; }
-        .event-pull-request  .tag { background: #b288ff; }
-        .event-pull-request-review .tag { background: #b288ff; }
-        .event-release       .tag { background: #c0f068; }
+        .event-push          .event-kind { background: var(--event-push); }
+        .event-create        .event-kind { background: var(--event-create); }
+        .event-delete        .event-kind { background: var(--event-delete); }
+        .event-issues        .event-kind { background: var(--event-issues); }
+        .event-issue-comment .event-kind { background: var(--event-issue-comment); }
+        .event-pull-request  .event-kind { background: var(--event-pull-request); }
+        .event-pull-request-review .event-kind { background: var(--event-pull-request-review); }
+        .event-release       .event-kind { background: var(--event-release); }
 
         .body {
             min-width: 0;
         }
-        .body .ts {
+        .body .event-time {
             font-family: "DM Mono", monospace;
             font-size: 0.7rem;
             letter-spacing: 0.08em;
@@ -144,7 +160,7 @@
             display: block;
             margin-bottom: 0.15rem;
         }
-        .body .what {
+        .body .event-message {
             font-size: 1rem;
             word-break: break-word;
             font-weight: 500;
@@ -179,10 +195,10 @@
             <ul class="feed">
                 {%- for event in events %}
                 <li class="item event-{{ event.event_kind }}">
-                    <span class="tag">{{ event.event_kind }}</span>
+                    <span class="event-kind">{{ event.event_kind }}</span>
                     <div class="body">
-                        <span class="ts">{{ event.timestamp }}</span>
-                        <div class="what">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</div>
+                        <span class="event-time">{{ event.timestamp }}</span>
+                        <div class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</div>
                     </div>
                 </li>
                 {%- endfor %}
