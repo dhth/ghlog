@@ -11,9 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --paper: #fbf6ea;
-            --ink: #2a261f;
-            --dim: #7c7468;
+            --bg: #fbf6ea;
+            --text: #2a261f;
+            --muted: #7c7468;
             --dot: #c8bfa9;
             --rule: #c8bfa9;
             --accent: #c0392b;
@@ -29,9 +29,9 @@
         }
         @media (prefers-color-scheme: dark) {
             :root {
-                --paper: #1a1814;
-                --ink: #f4ecd8;
-                --dim: #b0a690;
+                --bg: #1a1814;
+                --text: #f4ecd8;
+                --muted: #b0a690;
                 --dot: #2e2a22;
                 --rule: #3a342a;
                 --accent: #ff8a6a;
@@ -47,10 +47,10 @@
             }
         }
         * { box-sizing: border-box; }
-        html, body { background: var(--paper); }
+        html, body { background: var(--bg); }
         body {
             margin: 0;
-            color: var(--ink);
+            color: var(--text);
             font-family: "Newsreader", Georgia, serif;
             font-size: 17px;
             line-height: 1.5;
@@ -86,7 +86,7 @@
             font-weight: 700;
             font-size: clamp(2.4rem, 6vw, 3.6rem);
             line-height: 1;
-            color: var(--ink);
+            color: var(--text);
         }
         .head h1 a { text-decoration: none; }
         .head h1 .underline {
@@ -108,7 +108,7 @@
         .head .when {
             font-family: "Caveat", cursive;
             font-size: 1.2rem;
-            color: var(--dim);
+            color: var(--muted);
         }
 
         ul.event-list {
@@ -128,7 +128,7 @@
         .event-item .event-time {
             font-family: "Caveat", cursive;
             font-size: 1.05rem;
-            color: var(--dim);
+            color: var(--muted);
             line-height: 1.2;
         }
         .event-item .event-message {
@@ -158,7 +158,7 @@
             margin-top: 2.5rem;
             font-family: "Caveat", cursive;
             font-size: 1.2rem;
-            color: var(--dim);
+            color: var(--muted);
             text-align: right;
             transform: rotate(-2deg);
             transform-origin: right;
