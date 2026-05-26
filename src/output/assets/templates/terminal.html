@@ -25,6 +25,7 @@
             --issues: #f0b72f;
             --issue-comment: #f0b72f;
             --pull-request: #d2a8ff;
+            --pull-request-review: #d2a8ff;
             --release: #56d364;
         }
         @media (prefers-color-scheme: light) {
@@ -43,6 +44,7 @@
                 --issues: #9a6700;
                 --issue-comment: #9a6700;
                 --pull-request: #8250df;
+                --pull-request-review: #8250df;
                 --release: #1a7f37;
             }
         }
@@ -142,6 +144,7 @@
         .event-issues        .kind { color: var(--issues); }
         .event-issue-comment .kind { color: var(--issue-comment); }
         .event-pull-request  .kind { color: var(--pull-request); }
+        .event-pull-request-review .kind { color: var(--pull-request-review); }
         .event-release       .kind { color: var(--release); }
         .row .msg {
             white-space: pre-wrap;

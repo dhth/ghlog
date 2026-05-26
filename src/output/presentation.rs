@@ -24,6 +24,7 @@ pub enum EventKind {
     Issues,
     IssueComment,
     PullRequest,
+    PullRequestReview,
     Release,
 }
 
@@ -36,6 +37,7 @@ impl EventKind {
             Self::Issues => "issues",
             Self::IssueComment => "issue-comment",
             Self::PullRequest => "pull-request",
+            Self::PullRequestReview => "pull-request-review",
             Self::Release => "release",
         }
     }
@@ -48,6 +50,7 @@ impl EventKind {
             Self::Issues => "❗",
             Self::IssueComment => "💬",
             Self::PullRequest => "🔀",
+            Self::PullRequestReview => "📝",
             Self::Release => "📦",
         }
     }
@@ -60,6 +63,7 @@ impl EventKind {
             Self::Issues => Color::Yellow,
             Self::IssueComment => Color::Yellow,
             Self::PullRequest => Color::Purple,
+            Self::PullRequestReview => Color::Purple,
             Self::Release => Color::Green,
         }
     }
@@ -141,6 +145,25 @@ impl From<&Event> for EventPresentation {
                     link(&event.repo.name, event.repo.html_url()),
                 ],
             },
+            EventPayload::PullRequestReview(pull_request_review) => Self {
+                kind: EventKind::PullRequestReview,
+                fragments: vec![
+                    link(
+                        pull_request_review_verb(
+                            &pull_request_review.action,
+                            &pull_request_review.review.state,
+                        ),
+                        pull_request_review.review.html_url.clone(),
+                    ),
+                    text(" pull request "),
+                    link(
+                        format!("#{}", pull_request_review.pull_request.number),
+                        event.repo.url_for(&pull_request_review.pull_request.path()),
+                    ),
+                    text(" in "),
+                    link(&event.repo.name, event.repo.html_url()),
+                ],
+            },
             EventPayload::Release(release_event) => Self {
                 kind: EventKind::Release,
                 fragments: vec![
@@ -187,6 +210,20 @@ fn release_kind(release_event: &ReleaseEvent) -> &'static str {
 
 fn shorten_commit_hash(hash: &str) -> &str {
     hash.get(..7).unwrap_or(hash)
+}
+
+fn pull_request_review_verb(action: &str, state: &str) -> &'static str {
+    match action {
+        "created" => match state {
+            "approved" => "approved",
+            "changes_requested" => "requested changes in",
+            "commented" => "commented on",
+            _ => "reviewed",
+        },
+        "dismissed" => "dismissed review on",
+        "edited" => "edited review on",
+        _ => "reviewed",
+    }
 }
 
 pub fn humanized_date(dt: &DateTime<Utc>, reference: &DateTime<Utc>) -> String {

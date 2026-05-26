@@ -58,6 +58,7 @@ pub enum EventPayload {
     IssueComment(IssueCommentEvent),
     Issues(IssuesEvent),
     PullRequest(PullRequestEvent),
+    PullRequestReview(PullRequestReviewEvent),
     Release(ReleaseEvent),
 }
 
@@ -152,6 +153,19 @@ impl PullRequest {
     pub fn path(&self) -> String {
         format!("pull/{}", self.number)
     }
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PullRequestReviewEvent {
+    pub action: String,
+    pub review: PullRequestReview,
+    pub pull_request: PullRequest,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PullRequestReview {
+    pub state: String,
+    pub html_url: String,
 }
 
 #[derive(Debug, Deserialize)]

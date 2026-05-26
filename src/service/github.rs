@@ -39,6 +39,9 @@ impl TryFrom<RawEvent> for Event {
             Some("PullRequestEvent") => {
                 serde_json::from_value(raw.payload).map(EventPayload::PullRequest)
             }
+            Some("PullRequestReviewEvent") => {
+                serde_json::from_value(raw.payload).map(EventPayload::PullRequestReview)
+            }
             Some("ReleaseEvent") => serde_json::from_value(raw.payload).map(EventPayload::Release),
             _ => return Err(ConversionError::Unsupported),
         }
