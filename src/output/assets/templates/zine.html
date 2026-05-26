@@ -12,8 +12,8 @@
     <style>
         :root {
             --bg: #f7f3e9;
-            --ink: #161616;
-            --dim: #5c5c5c;
+            --text: #161616;
+            --muted: #5c5c5c;
             --accent: #ff2e63;
             --accent-2: #08d9d6;
             --paper-line: #161616;
@@ -31,8 +31,8 @@
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg: #161616;
-                --ink: #f7f3e9;
-                --dim: #9a9a9a;
+                --text: #f7f3e9;
+                --muted: #9a9a9a;
                 --accent: #ff2e63;
                 --accent-2: #08d9d6;
                 --paper-line: #f7f3e9;
@@ -52,7 +52,7 @@
         html, body { background: var(--bg); }
         body {
             margin: 0;
-            color: var(--ink);
+            color: var(--text);
             font-family: "Archivo", sans-serif;
             font-size: 14px;
             line-height: 1.45;
@@ -87,7 +87,7 @@
             font-size: clamp(2rem, 5.5vw, 3.6rem);
             line-height: 0.95;
             letter-spacing: -0.03em;
-            color: var(--ink);
+            color: var(--text);
         }
         .head h1 a { text-decoration: none; }
         .head h1 .at {
@@ -109,7 +109,7 @@
             font-family: "DM Mono", monospace;
             font-size: 0.75rem;
             letter-spacing: 0.08em;
-            color: var(--dim);
+            color: var(--muted);
         }
 
         ul.event-list {
@@ -156,7 +156,7 @@
             font-family: "DM Mono", monospace;
             font-size: 0.7rem;
             letter-spacing: 0.08em;
-            color: var(--dim);
+            color: var(--muted);
             display: block;
             margin-bottom: 0.15rem;
         }
@@ -174,7 +174,7 @@
             font-family: "DM Mono", monospace;
             font-size: 0.78rem;
             letter-spacing: 0.04em;
-            color: var(--dim);
+            color: var(--muted);
         }
         .footer a { color: var(--accent); }
 
