@@ -111,12 +111,12 @@
             color: var(--dim);
         }
 
-        ul.notes {
+        ul.event-list {
             list-style: none;
             margin: 0;
             padding: 0;
         }
-        .note {
+        .event-item {
             display: grid;
             grid-template-columns: 5.5rem 7rem 1fr;
             gap: 1rem;
@@ -124,17 +124,17 @@
             border-bottom: 1px dashed var(--rule);
             align-items: baseline;
         }
-        .note:last-child { border-bottom: none; }
-        .note .event-time {
+        .event-item:last-child { border-bottom: none; }
+        .event-item .event-time {
             font-family: "Caveat", cursive;
             font-size: 1.05rem;
             color: var(--dim);
             line-height: 1.2;
         }
-        .note .event-message {
+        .event-item .event-message {
             font-size: 1.02rem;
         }
-        .note .event-kind {
+        .event-item .event-kind {
             display: inline-block;
             font-family: "Caveat", cursive;
             font-size: 1.05rem;
@@ -154,7 +154,7 @@
         .event-pull-request-review .event-kind { background: var(--event-pull-request-review); }
         .event-release .event-kind { background: var(--event-release); }
 
-        .sig {
+        .footer {
             margin-top: 2.5rem;
             font-family: "Caveat", cursive;
             font-size: 1.2rem;
@@ -163,11 +163,11 @@
             transform: rotate(-2deg);
             transform-origin: right;
         }
-        .sig a { text-decoration-color: var(--accent); }
+        .footer a { text-decoration-color: var(--accent); }
 
         @media (max-width: 640px) {
             .page { padding: 1.5rem 1rem 3rem; }
-            .note { grid-template-columns: 1fr; gap: 0.15rem; }
+            .event-item { grid-template-columns: 1fr; gap: 0.15rem; }
         }    </style>
 </head>
 <body>
@@ -178,9 +178,9 @@
         </header>
 
         <main>
-            <ul class="notes">
+            <ul class="event-list">
                 {%- for event in events %}
-                <li class="note event-{{ event.event_kind }}">
+                <li class="event-item event-{{ event.event_kind }}">
                     <span class="event-time">{{ event.timestamp }}</span>
                     <span class="event-kind">{{ event.event_kind }}</span>
                     <span class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
@@ -189,7 +189,7 @@
             </ul>
         </main>
 
-        <div class="sig">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
+        <div class="footer">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
     </div>
 </body>
 </html>

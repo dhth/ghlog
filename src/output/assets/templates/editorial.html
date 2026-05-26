@@ -96,12 +96,12 @@
             white-space: nowrap;
         }
 
-        ul.list {
+        ul.event-list {
             list-style: none;
             margin: 0;
             padding: 0;
         }
-        .row {
+        .event-item {
             display: grid;
             grid-template-columns: 7rem 8rem 1fr;
             gap: 1.25rem;
@@ -109,14 +109,14 @@
             border-bottom: 1px solid color-mix(in srgb, var(--rule) 15%, transparent);
             align-items: baseline;
         }
-        .row:last-child { border-bottom: none; }
-        .row .event-time {
+        .event-item:last-child { border-bottom: none; }
+        .event-item .event-time {
             font-size: 0.72rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--dim);
         }
-        .row .event-message {
+        .event-item .event-message {
             font-size: 0.95rem;
             word-break: break-word;
         }
@@ -139,7 +139,7 @@
         .event-pull-request-review .event-kind { color: var(--event-pull-request-review); }
         .event-release       .event-kind { color: var(--event-release); }
 
-        .foot {
+        .footer {
             margin-top: 2rem;
             padding-top: 0.85rem;
             border-top: 1px solid color-mix(in srgb, var(--rule) 25%, transparent);
@@ -147,12 +147,12 @@
             color: var(--dim);
             text-align: right;
         }
-        .foot a { color: var(--accent); }
+        .footer a { color: var(--accent); }
 
         @media (max-width: 640px) {
             .page { padding: 1.5rem 1.1rem 2rem; }
             .head { grid-template-columns: 1fr; gap: 0.4rem; }
-            .row { grid-template-columns: 1fr; gap: 0.2rem; }
+            .event-item { grid-template-columns: 1fr; gap: 0.2rem; }
             .event-kind { border-left: none; padding-left: 0; }
         }
     </style>
@@ -164,9 +164,9 @@
             <div class="meta">{{ timestamp }}</div>
         </header>
         <main>
-            <ul class="list">
+            <ul class="event-list">
                 {%- for event in events %}
-                <li class="row event-{{ event.event_kind }}">
+                <li class="event-item event-{{ event.event_kind }}">
                     <span class="event-time">{{ event.timestamp }}</span>
                     <span class="event-kind">{{ event.event_kind }}</span>
                     <span class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
@@ -174,7 +174,7 @@
                 {%- endfor %}
             </ul>
         </main>
-        <div class="foot">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
+        <div class="footer">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
     </div>
 </body>
 </html>
