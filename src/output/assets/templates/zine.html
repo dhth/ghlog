@@ -112,12 +112,12 @@
             color: var(--dim);
         }
 
-        ul.feed {
+        ul.event-list {
             list-style: none;
             margin: 0;
             padding: 0;
         }
-        .item {
+        .event-item {
             display: grid;
             grid-template-columns: 8.5rem 1fr;
             gap: 1rem;
@@ -125,7 +125,7 @@
             border-bottom: 1px dashed color-mix(in srgb, var(--paper-line) 35%, transparent);
             align-items: baseline;
         }
-        .item:last-child { border-bottom: none; }
+        .event-item:last-child { border-bottom: none; }
         .event-kind {
             font-family: "DM Mono", monospace;
             font-weight: 500;
@@ -166,7 +166,7 @@
             font-weight: 500;
         }
 
-        .foot {
+        .footer {
             margin-top: 1.5rem;
             padding-top: 0.85rem;
             border-top: 1px dashed color-mix(in srgb, var(--paper-line) 35%, transparent);
@@ -176,11 +176,11 @@
             letter-spacing: 0.04em;
             color: var(--dim);
         }
-        .foot a { color: var(--accent); }
+        .footer a { color: var(--accent); }
 
         @media (max-width: 640px) {
             .page { padding: 1rem 0.85rem 2rem; }
-            .item { grid-template-columns: 1fr; gap: 0.3rem; }
+            .event-item { grid-template-columns: 1fr; gap: 0.3rem; }
         }
     </style>
 </head>
@@ -192,9 +192,9 @@
         </header>
 
         <main>
-            <ul class="feed">
+            <ul class="event-list">
                 {%- for event in events %}
-                <li class="item event-{{ event.event_kind }}">
+                <li class="event-item event-{{ event.event_kind }}">
                     <span class="event-kind">{{ event.event_kind }}</span>
                     <div class="body">
                         <span class="event-time">{{ event.timestamp }}</span>
@@ -205,7 +205,7 @@
             </ul>
         </main>
 
-        <div class="foot">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
+        <div class="footer">built with <a href="{{ branding.url }}" target="_blank" rel="noopener noreferrer">{{ branding.tool_name }}</a></div>
     </div>
 </body>
 </html>
