@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="color-scheme" content="dark light">
+    <meta name="color-scheme" content="light dark">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔭</text></svg>">
     <title>{{ title }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,9 +14,10 @@
             --bg: #fbf6ea;
             --text: #2a261f;
             --muted: #7c7468;
+            --accent: #c0392b;
             --dot: #c8bfa9;
             --rule: #c8bfa9;
-            --accent: #c0392b;
+            --hi-text: #2a261f;
             --event-push: #b3d4f0;
             --event-create: #c8e6a0;
             --event-delete: #f0b3b3;
@@ -25,16 +26,16 @@
             --event-pull-request: #e0b3e8;
             --event-pull-request-review: #e0b3e8;
             --event-release: #c8e6a0;
-            --hi-text: #2a261f;
         }
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg: #1a1814;
                 --text: #f4ecd8;
                 --muted: #b0a690;
+                --accent: #ff8a6a;
                 --dot: #2e2a22;
                 --rule: #3a342a;
-                --accent: #ff8a6a;
+                --hi-text: #1a1814;
                 --event-push: #6fa8d6;
                 --event-create: #9dc46a;
                 --event-delete: #e07b7b;
@@ -43,7 +44,6 @@
                 --event-pull-request: #c98ad6;
                 --event-pull-request-review: #c98ad6;
                 --event-release: #9dc46a;
-                --hi-text: #1a1814;
             }
         }
         * { box-sizing: border-box; }
