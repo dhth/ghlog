@@ -19,14 +19,14 @@
             --text: #c9d1d9;
             --dim: #6e7681;
             --prompt: #7ee787;
-            --push: #79c0ff;
-            --create: #7ee787;
-            --delete: #ff7b72;
-            --issues: #f0b72f;
-            --issue-comment: #f0b72f;
-            --pull-request: #d2a8ff;
-            --pull-request-review: #d2a8ff;
-            --release: #56d364;
+            --event-push: #79c0ff;
+            --event-create: #7ee787;
+            --event-delete: #ff7b72;
+            --event-issues: #f0b72f;
+            --event-issue-comment: #f0b72f;
+            --event-pull-request: #d2a8ff;
+            --event-pull-request-review: #d2a8ff;
+            --event-release: #56d364;
         }
         @media (prefers-color-scheme: light) {
             :root {
@@ -38,14 +38,14 @@
                 --text: #1f2328;
                 --dim: #6e7781;
                 --prompt: #1a7f37;
-                --push: #0969da;
-                --create: #1a7f37;
-                --delete: #cf222e;
-                --issues: #9a6700;
-                --issue-comment: #9a6700;
-                --pull-request: #8250df;
-                --pull-request-review: #8250df;
-                --release: #1a7f37;
+                --event-push: #0969da;
+                --event-create: #1a7f37;
+                --event-delete: #cf222e;
+                --event-issues: #9a6700;
+                --event-issue-comment: #9a6700;
+                --event-pull-request: #8250df;
+                --event-pull-request-review: #8250df;
+                --event-release: #1a7f37;
             }
         }
         * { box-sizing: border-box; }
@@ -134,19 +134,19 @@
         }
         .row:last-child { border-bottom: none; }
         .row:nth-child(odd) { background: var(--panel-alt); }
-        .row .ts { color: var(--dim); white-space: nowrap; }
-        .row .kind {
+        .row .event-time { color: var(--dim); white-space: nowrap; }
+        .row .event-kind {
             text-transform: lowercase;
         }
-        .event-push          .kind { color: var(--push); }
-        .event-create        .kind { color: var(--create); }
-        .event-delete        .kind { color: var(--delete); }
-        .event-issues        .kind { color: var(--issues); }
-        .event-issue-comment .kind { color: var(--issue-comment); }
-        .event-pull-request  .kind { color: var(--pull-request); }
-        .event-pull-request-review .kind { color: var(--pull-request-review); }
-        .event-release       .kind { color: var(--release); }
-        .row .msg {
+        .event-push          .event-kind { color: var(--event-push); }
+        .event-create        .event-kind { color: var(--event-create); }
+        .event-delete        .event-kind { color: var(--event-delete); }
+        .event-issues        .event-kind { color: var(--event-issues); }
+        .event-issue-comment .event-kind { color: var(--event-issue-comment); }
+        .event-pull-request  .event-kind { color: var(--event-pull-request); }
+        .event-pull-request-review .event-kind { color: var(--event-pull-request-review); }
+        .event-release       .event-kind { color: var(--event-release); }
+        .row .event-message {
             white-space: pre-wrap;
             word-break: break-word;
             color: var(--text);
@@ -186,9 +186,9 @@
                 <ul class="events">
                     {%- for event in events %}
                     <li class="row event-{{ event.event_kind }}">
-                        <span class="ts">{{ event.timestamp }}</span>
-                        <span class="kind">{{ event.event_kind }}</span>
-                        <span class="msg">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
+                        <span class="event-time">{{ event.timestamp }}</span>
+                        <span class="event-kind">{{ event.event_kind }}</span>
+                        <span class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
                     </li>
                     {%- endfor %}
                 </ul>

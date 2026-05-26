@@ -16,14 +16,14 @@
             --dim: #6b6b6b;
             --rule: #111111;
             --accent: #e63946;
-            --push: #1f6feb;
-            --create: #1a7f37;
-            --delete: #cf222e;
-            --issues: #b08800;
-            --issue-comment: #b08800;
-            --pull-request: #8250df;
-            --pull-request-review: #8250df;
-            --release: #1a7f37;
+            --event-push: #1f6feb;
+            --event-create: #1a7f37;
+            --event-delete: #cf222e;
+            --event-issues: #b08800;
+            --event-issue-comment: #b08800;
+            --event-pull-request: #8250df;
+            --event-pull-request-review: #8250df;
+            --event-release: #1a7f37;
         }
         @media (prefers-color-scheme: dark) {
             :root {
@@ -32,14 +32,14 @@
                 --dim: #8a8a85;
                 --rule: #f4f4f1;
                 --accent: #ff5566;
-                --push: #79c0ff;
-                --create: #7ee787;
-                --delete: #ff7b72;
-                --issues: #f0b72f;
-                --issue-comment: #f0b72f;
-                --pull-request: #d2a8ff;
-                --pull-request-review: #d2a8ff;
-                --release: #7ee787;
+                --event-push: #79c0ff;
+                --event-create: #7ee787;
+                --event-delete: #ff7b72;
+                --event-issues: #f0b72f;
+                --event-issue-comment: #f0b72f;
+                --event-pull-request: #d2a8ff;
+                --event-pull-request-review: #d2a8ff;
+                --event-release: #7ee787;
             }
         }
         * { box-sizing: border-box; }
@@ -110,17 +110,17 @@
             align-items: baseline;
         }
         .row:last-child { border-bottom: none; }
-        .row .ts {
+        .row .event-time {
             font-size: 0.72rem;
             letter-spacing: 0.08em;
             text-transform: uppercase;
             color: var(--dim);
         }
-        .row .msg {
+        .row .event-message {
             font-size: 0.95rem;
             word-break: break-word;
         }
-        .kind {
+        .event-kind {
             display: inline-block;
             font-size: 0.65rem;
             letter-spacing: 0.18em;
@@ -130,14 +130,14 @@
             border-left: 3px solid currentColor;
             padding-left: 0.5rem;
         }
-        .event-push          .kind { color: var(--push); }
-        .event-create        .kind { color: var(--create); }
-        .event-delete        .kind { color: var(--delete); }
-        .event-issues        .kind { color: var(--issues); }
-        .event-issue-comment .kind { color: var(--issue-comment); }
-        .event-pull-request  .kind { color: var(--pull-request); }
-        .event-pull-request-review .kind { color: var(--pull-request-review); }
-        .event-release       .kind { color: var(--release); }
+        .event-push          .event-kind { color: var(--event-push); }
+        .event-create        .event-kind { color: var(--event-create); }
+        .event-delete        .event-kind { color: var(--event-delete); }
+        .event-issues        .event-kind { color: var(--event-issues); }
+        .event-issue-comment .event-kind { color: var(--event-issue-comment); }
+        .event-pull-request  .event-kind { color: var(--event-pull-request); }
+        .event-pull-request-review .event-kind { color: var(--event-pull-request-review); }
+        .event-release       .event-kind { color: var(--event-release); }
 
         .foot {
             margin-top: 2rem;
@@ -153,7 +153,7 @@
             .page { padding: 1.5rem 1.1rem 2rem; }
             .head { grid-template-columns: 1fr; gap: 0.4rem; }
             .row { grid-template-columns: 1fr; gap: 0.2rem; }
-            .kind { border-left: none; padding-left: 0; }
+            .event-kind { border-left: none; padding-left: 0; }
         }
     </style>
 </head>
@@ -167,9 +167,9 @@
             <ul class="list">
                 {%- for event in events %}
                 <li class="row event-{{ event.event_kind }}">
-                    <span class="ts">{{ event.timestamp }}</span>
-                    <span class="kind">{{ event.event_kind }}</span>
-                    <span class="msg">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
+                    <span class="event-time">{{ event.timestamp }}</span>
+                    <span class="event-kind">{{ event.event_kind }}</span>
+                    <span class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
                 </li>
                 {%- endfor %}
             </ul>
