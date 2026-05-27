@@ -5,29 +5,29 @@ const OSC: &str = "\u{1b}]";
 const ST: &str = "\u{1b}\\";
 const RESET: &str = "\u{1b}[0m";
 
-pub fn render(events: &[EventPresentation], reference_time: DateTime<Utc>) -> String {
+pub fn render(events: Vec<EventPresentation>, reference_time: DateTime<Utc>) -> String {
     events
-        .iter()
+        .into_iter()
         .map(|event| render_event(event, &reference_time))
         .collect::<Vec<_>>()
         .join("\n")
 }
 
-fn render_event(event: &EventPresentation, reference_time: &DateTime<Utc>) -> String {
+fn render_event(event: EventPresentation, reference_time: &DateTime<Utc>) -> String {
     let relative_time = humanized_date(&event.created_at, reference_time);
     let time = colorize(&format!("{relative_time:<13}"), Color::Gray);
     let event_text = {
-        let text: String = event.fragments.iter().map(render_fragment).collect();
+        let text: String = event.fragments.into_iter().map(render_fragment).collect();
         colorize(&text, event.kind.color())
     };
 
     format!("{time} {event_text}")
 }
 
-fn render_fragment(fragment: &Fragment) -> String {
-    match &fragment.url {
+fn render_fragment(fragment: Fragment) -> String {
+    match fragment.url {
         Some(url) => format!("{OSC}8;;{url}{ST}{}{OSC}8;;{ST}", fragment.text),
-        None => fragment.text.clone(),
+        None => fragment.text,
     }
 }
 

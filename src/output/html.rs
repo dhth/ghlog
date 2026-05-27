@@ -41,17 +41,17 @@ struct HtmlEvent {
     timestamp: String,
 }
 
-impl From<&EventPresentation> for HtmlEvent {
-    fn from(event: &EventPresentation) -> Self {
+impl From<EventPresentation> for HtmlEvent {
+    fn from(event: EventPresentation) -> Self {
         Self {
             event_kind: event.kind.name(),
             fragments: event
                 .fragments
-                .iter()
+                .into_iter()
                 .map(|fragment| HtmlFragment {
-                    text: fragment.text.clone(),
-                    url: fragment.url.clone(),
-                    title: fragment.detail.clone(),
+                    text: fragment.text,
+                    url: fragment.url,
+                    title: fragment.detail,
                 })
                 .collect(),
             timestamp: event.created_at.format("%-d %b %Y · %H:%M UTC").to_string(),
@@ -60,7 +60,7 @@ impl From<&EventPresentation> for HtmlEvent {
 }
 
 pub fn render(
-    events: &[EventPresentation],
+    events: Vec<EventPresentation>,
     reference_time: DateTime<Utc>,
     html_template: HtmlTemplate,
     username: &Username,
@@ -76,7 +76,7 @@ pub fn render(
 
     let tera_context = TeraContext::from_serialize(HtmlContext {
         branding,
-        events: events.iter().map(HtmlEvent::from).collect(),
+        events: events.into_iter().map(HtmlEvent::from).collect(),
         timestamp: reference_time.format("%-d %b %Y · %H:%M UTC").to_string(),
         title: format!("@{} recent activity", username.as_str()),
         user_url: format!("https://github.com/{}", username.as_str()),

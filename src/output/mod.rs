@@ -38,11 +38,11 @@ pub fn render(
 
     let output = match format {
         OutputFormat::Html { template } => {
-            html::render(&events, reference_time, template, username)?
+            html::render(events, reference_time, template, username)?
         }
-        OutputFormat::Markdown => markdown::render(&events),
-        OutputFormat::Plain => plain::render(&events, reference_time),
-        OutputFormat::Terminal => terminal::render(&events, reference_time),
+        OutputFormat::Markdown => markdown::render(events),
+        OutputFormat::Plain => plain::render(events, reference_time),
+        OutputFormat::Terminal => terminal::render(events, reference_time),
     };
 
     Ok(output)
