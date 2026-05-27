@@ -14,7 +14,8 @@ pub enum Command {
     Run {
         /// GitHub username to run for
         username: String,
-        /// Event type to include; repeat to include multiple types. Limit applies after filtering.
+
+        /// Filter by event type; repeat to include multiple types. Limit applies after filtering.
         #[arg(
             short = 'e',
             long = "event-type",
