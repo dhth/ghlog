@@ -70,6 +70,7 @@ impl EventKind {
 }
 
 pub struct EventPresentation {
+    pub created_at: DateTime<Utc>,
     pub kind: EventKind,
     pub fragments: Vec<Fragment>,
 }
@@ -78,6 +79,7 @@ impl From<&Event> for EventPresentation {
     fn from(event: &Event) -> Self {
         match &event.payload {
             EventPayload::Push(push) => Self {
+                created_at: event.created_at,
                 kind: EventKind::Push,
                 fragments: vec![
                     text("pushed "),
@@ -92,6 +94,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Create(create) => Self {
+                created_at: event.created_at,
                 kind: EventKind::Create,
                 fragments: vec![
                     text(format!("created {} ", create.ref_type)),
@@ -101,6 +104,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Delete(delete) => Self {
+                created_at: event.created_at,
                 kind: EventKind::Delete,
                 fragments: vec![
                     text(format!("deleted {} ", delete.ref_type)),
@@ -110,6 +114,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Issues(issue) => Self {
+                created_at: event.created_at,
                 kind: EventKind::Issues,
                 fragments: vec![
                     text(format!("{} issue ", issue.action)),
@@ -122,6 +127,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::IssueComment(issue_comment) => Self {
+                created_at: event.created_at,
                 kind: EventKind::IssueComment,
                 fragments: vec![
                     text("commented on issue "),
@@ -134,6 +140,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::PullRequest(pull_request) => Self {
+                created_at: event.created_at,
                 kind: EventKind::PullRequest,
                 fragments: vec![
                     text(format!("{} pull request ", pull_request.action)),
@@ -146,6 +153,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::PullRequestReview(pull_request_review) => Self {
+                created_at: event.created_at,
                 kind: EventKind::PullRequestReview,
                 fragments: vec![
                     link(
@@ -165,6 +173,7 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Release(release_event) => Self {
+                created_at: event.created_at,
                 kind: EventKind::Release,
                 fragments: vec![
                     text(format!(

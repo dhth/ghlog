@@ -7,6 +7,7 @@ mod terminal;
 use crate::domain::events::Event;
 use crate::domain::user::Username;
 use chrono::{DateTime, Utc};
+use presentation::EventPresentation;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum OutputFormat {
@@ -30,13 +31,18 @@ pub fn render(
     format: OutputFormat,
     username: &Username,
 ) -> anyhow::Result<String> {
+    let events = events
+        .iter()
+        .map(EventPresentation::from)
+        .collect::<Vec<_>>();
+
     let output = match format {
         OutputFormat::Html { template } => {
-            html::render(events, reference_time, template, username)?
+            html::render(&events, reference_time, template, username)?
         }
-        OutputFormat::Markdown => markdown::render(events),
-        OutputFormat::Plain => plain::render(events, reference_time),
-        OutputFormat::Terminal => terminal::render(events, reference_time),
+        OutputFormat::Markdown => markdown::render(&events),
+        OutputFormat::Plain => plain::render(&events, reference_time),
+        OutputFormat::Terminal => terminal::render(&events, reference_time),
     };
 
     Ok(output)
