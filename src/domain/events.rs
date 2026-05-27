@@ -34,6 +34,21 @@ pub struct Event {
     pub created_at: DateTime<Utc>,
 }
 
+impl Event {
+    pub fn kind(&self) -> EventKind {
+        match &self.payload {
+            EventPayload::Create(_) => EventKind::Create,
+            EventPayload::Delete(_) => EventKind::Delete,
+            EventPayload::IssueComment(_) => EventKind::IssueComment,
+            EventPayload::Issues(_) => EventKind::Issues,
+            EventPayload::PullRequest(_) => EventKind::PullRequest,
+            EventPayload::PullRequestReview(_) => EventKind::PullRequestReview,
+            EventPayload::Push(_) => EventKind::Push,
+            EventPayload::Release(_) => EventKind::Release,
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Repo {
     pub name: String,
@@ -48,6 +63,18 @@ impl Repo {
     pub fn url_for(&self, path: &str) -> String {
         format!("{}/{}", self.html_url(), path)
     }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub enum EventKind {
+    Create,
+    Delete,
+    IssueComment,
+    Issues,
+    PullRequest,
+    PullRequestReview,
+    Push,
+    Release,
 }
 
 #[derive(Debug)]
