@@ -130,6 +130,7 @@ pub struct IssueCommentEvent {
 #[derive(Debug, Deserialize)]
 pub struct Issue {
     pub number: u64,
+    pub title: String,
     pub html_url: String,
 }
 
@@ -145,8 +146,29 @@ pub struct PullRequestEvent {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct PullRequestRepo {
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PullRequestBase {
+    #[serde(rename = "ref")]
+    pub git_ref: String,
+    pub repo: PullRequestRepo,
+}
+
+#[derive(Debug, Deserialize)]
+pub struct PullRequestHead {
+    #[serde(rename = "ref")]
+    pub git_ref: String,
+    pub repo: PullRequestRepo,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct PullRequest {
     pub number: u64,
+    pub base: PullRequestBase,
+    pub head: PullRequestHead,
 }
 
 impl PullRequest {

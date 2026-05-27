@@ -31,6 +31,7 @@ struct Branding {
 struct HtmlFragment {
     text: String,
     url: Option<String>,
+    title: Option<String>,
 }
 
 #[derive(Serialize)]
@@ -50,6 +51,7 @@ impl From<&EventPresentation> for HtmlEvent {
                 .map(|fragment| HtmlFragment {
                     text: fragment.text.clone(),
                     url: fragment.url.clone(),
+                    title: fragment.detail.clone(),
                 })
                 .collect(),
             timestamp: event.created_at.format("%-d %b %Y · %H:%M UTC").to_string(),

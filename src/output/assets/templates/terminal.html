@@ -188,7 +188,7 @@
                     <li class="event-item event-{{ event.event_kind }}">
                         <span class="event-time">{{ event.timestamp }}</span>
                         <span class="event-kind">{{ event.event_kind }}</span>
-                        <span class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer">{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
+                        <span class="event-message">{% for fragment in event.fragments %}{% if fragment.url %}<a href="{{ fragment.url }}" target="_blank" rel="noopener noreferrer"{% if fragment.title %} title="{{ fragment.title }}"{% endif %}>{{ fragment.text }}</a>{% else %}{{ fragment.text }}{% endif %}{% endfor %}</span>
                     </li>
                     {%- endfor %}
                 </ul>
