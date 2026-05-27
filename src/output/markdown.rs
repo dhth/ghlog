@@ -10,7 +10,12 @@ pub fn render(events: Vec<EventPresentation>) -> String {
 
 fn render_event(event: EventPresentation) -> String {
     let emoji = event.kind.emoji();
-    let text: String = event.fragments.into_iter().map(render_fragment).collect();
+    let text = event
+        .fragments
+        .into_iter()
+        .map(render_fragment)
+        .collect::<Vec<_>>()
+        .join(" ");
 
     format!("- {emoji} {text}")
 }
