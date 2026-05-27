@@ -14,6 +14,14 @@ pub enum Command {
     Run {
         /// GitHub username to run for
         username: String,
+        /// Event type to include; repeat to include multiple types. Limit applies after filtering.
+        #[arg(
+            short = 'e',
+            long = "event-type",
+            value_enum,
+            value_name = "EVENT_TYPE"
+        )]
+        event_types: Vec<EventType>,
         /// Maximum number of events to show
         #[arg(short = 'l', long = "limit", default_value_t = 20)]
         limit: usize,
@@ -24,6 +32,18 @@ pub enum Command {
         #[arg(long = "html-template", value_enum, value_name = "TEMPLATE", default_value_t = HtmlTemplate::Terminal)]
         html_template: HtmlTemplate,
     },
+}
+
+#[derive(Clone, Copy, Debug, ValueEnum)]
+pub enum EventType {
+    Create,
+    Delete,
+    IssueComment,
+    Issues,
+    PullRequest,
+    PullRequestReview,
+    Push,
+    Release,
 }
 
 #[derive(Clone, Copy, Debug, ValueEnum)]

@@ -1,3 +1,4 @@
+use crate::cli::EventType;
 use crate::domain::events::{EventKind, EventKindFilter, EventLimit};
 use crate::domain::user::Username;
 use crate::output::{HtmlTemplate, OutputFormat};
@@ -17,12 +18,15 @@ impl TryFrom<crate::cli::Command> for Command {
     fn try_from(command: crate::cli::Command) -> Result<Self, Self::Error> {
         match command {
             crate::cli::Command::Run {
+                event_types,
                 username,
                 limit,
                 output_format,
                 html_template,
             } => Ok(Self::Run {
-                event_kind_filter: EventKindFilter::from_event_kinds([EventKind::Push]),
+                event_kind_filter: EventKindFilter::from_event_kinds(
+                    event_types.into_iter().map(EventKind::from_cli),
+                ),
                 username: Username::try_from(username)?,
                 limit: EventLimit::try_from(limit)?,
                 output_format: OutputFormat::from_cli(output_format, html_template),
@@ -53,6 +57,21 @@ impl OutputFormat {
             crate::cli::OutputFormat::Markdown => Self::Markdown,
             crate::cli::OutputFormat::Plain => Self::Plain,
             crate::cli::OutputFormat::Terminal => Self::Terminal,
+        }
+    }
+}
+
+impl EventKind {
+    fn from_cli(value: EventType) -> Self {
+        match value {
+            EventType::Create => Self::Create,
+            EventType::Delete => Self::Delete,
+            EventType::IssueComment => Self::IssueComment,
+            EventType::Issues => Self::Issues,
+            EventType::PullRequest => Self::PullRequest,
+            EventType::PullRequestReview => Self::PullRequestReview,
+            EventType::Push => Self::Push,
+            EventType::Release => Self::Release,
         }
     }
 }
