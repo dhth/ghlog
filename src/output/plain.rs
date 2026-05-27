@@ -11,7 +11,12 @@ pub fn render(events: Vec<EventPresentation>, reference_time: DateTime<Utc>) -> 
 
 fn render_event(event: EventPresentation, reference_time: &DateTime<Utc>) -> String {
     let relative_time = humanized_date(&event.created_at, reference_time);
-    let event_text: String = event.fragments.into_iter().map(|part| part.text).collect();
+    let event_text = event
+        .fragments
+        .into_iter()
+        .map(|part| part.text)
+        .collect::<Vec<_>>()
+        .join(" ");
 
     format!("{relative_time:<13} {event_text}")
 }

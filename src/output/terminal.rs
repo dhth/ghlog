@@ -17,7 +17,12 @@ fn render_event(event: EventPresentation, reference_time: &DateTime<Utc>) -> Str
     let relative_time = humanized_date(&event.created_at, reference_time);
     let time = colorize(&format!("{relative_time:<13}"), Color::Gray);
     let event_text = {
-        let text: String = event.fragments.into_iter().map(render_fragment).collect();
+        let text = event
+            .fragments
+            .into_iter()
+            .map(render_fragment)
+            .collect::<Vec<_>>()
+            .join(" ");
         colorize(&text, event.kind.color())
     };
 
