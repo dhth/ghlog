@@ -1,12 +1,11 @@
 use super::presentation::{Color, EventPresentation, Fragment, humanized_date};
-use crate::domain::events::Event;
 use chrono::{DateTime, Utc};
 
 const OSC: &str = "\u{1b}]";
 const ST: &str = "\u{1b}\\";
 const RESET: &str = "\u{1b}[0m";
 
-pub fn render(events: &[Event], reference_time: DateTime<Utc>) -> String {
+pub fn render(events: &[EventPresentation], reference_time: DateTime<Utc>) -> String {
     events
         .iter()
         .map(|event| render_event(event, &reference_time))
@@ -14,20 +13,15 @@ pub fn render(events: &[Event], reference_time: DateTime<Utc>) -> String {
         .join("\n")
 }
 
-fn render_event(event: &Event, reference_time: &DateTime<Utc>) -> String {
+fn render_event(event: &EventPresentation, reference_time: &DateTime<Utc>) -> String {
     let relative_time = humanized_date(&event.created_at, reference_time);
-    let presentation = EventPresentation::from(event);
     let time = colorize(&format!("{relative_time:<13}"), Color::Gray);
-    let event_text = colorize(
-        &render_presentation(&presentation),
-        presentation.kind.color(),
-    );
+    let event_text = {
+        let text: String = event.fragments.iter().map(render_fragment).collect();
+        colorize(&text, event.kind.color())
+    };
 
     format!("{time} {event_text}")
-}
-
-fn render_presentation(presentation: &EventPresentation) -> String {
-    presentation.fragments.iter().map(render_fragment).collect()
 }
 
 fn render_fragment(fragment: &Fragment) -> String {

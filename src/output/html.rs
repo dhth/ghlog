@@ -1,12 +1,10 @@
+use super::HtmlTemplate;
+use super::presentation::EventPresentation;
+use crate::domain::user::Username;
 use anyhow::Context;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 use tera::{Context as TeraContext, Tera};
-
-use super::HtmlTemplate;
-use super::presentation::EventPresentation;
-use crate::domain::events::Event;
-use crate::domain::user::Username;
 
 const TEMPLATE_EDITORIAL: &str = include_str!("./assets/templates/editorial.html");
 const TEMPLATE_NOTEBOOK: &str = include_str!("./assets/templates/notebook.html");
@@ -30,20 +28,37 @@ struct Branding {
 }
 
 #[derive(Serialize)]
+struct HtmlFragment {
+    text: String,
+    url: Option<String>,
+}
+
+#[derive(Serialize)]
 struct HtmlEvent {
     event_kind: &'static str,
     fragments: Vec<HtmlFragment>,
     timestamp: String,
 }
 
-#[derive(Serialize)]
-struct HtmlFragment {
-    text: String,
-    url: Option<String>,
+impl From<&EventPresentation> for HtmlEvent {
+    fn from(event: &EventPresentation) -> Self {
+        Self {
+            event_kind: event.kind.name(),
+            fragments: event
+                .fragments
+                .iter()
+                .map(|fragment| HtmlFragment {
+                    text: fragment.text.clone(),
+                    url: fragment.url.clone(),
+                })
+                .collect(),
+            timestamp: event.created_at.format("%-d %b %Y · %H:%M UTC").to_string(),
+        }
+    }
 }
 
 pub fn render(
-    events: &[Event],
+    events: &[EventPresentation],
     reference_time: DateTime<Utc>,
     html_template: HtmlTemplate,
     username: &Username,
@@ -77,24 +92,5 @@ fn template_contents(html_template: HtmlTemplate) -> &'static str {
         HtmlTemplate::Notebook => TEMPLATE_NOTEBOOK,
         HtmlTemplate::Terminal => TEMPLATE_TERMINAL,
         HtmlTemplate::Zine => TEMPLATE_ZINE,
-    }
-}
-
-impl From<&Event> for HtmlEvent {
-    fn from(event: &Event) -> Self {
-        let presentation = EventPresentation::from(event);
-
-        Self {
-            event_kind: presentation.kind.name(),
-            fragments: presentation
-                .fragments
-                .into_iter()
-                .map(|fragment| HtmlFragment {
-                    text: fragment.text,
-                    url: fragment.url,
-                })
-                .collect(),
-            timestamp: event.created_at.format("%-d %b %Y · %H:%M UTC").to_string(),
-        }
     }
 }

@@ -1,7 +1,6 @@
 use super::presentation::{EventPresentation, Fragment};
-use crate::domain::events::Event;
 
-pub fn render(events: &[Event]) -> String {
+pub fn render(events: &[EventPresentation]) -> String {
     events
         .iter()
         .map(render_event)
@@ -9,16 +8,11 @@ pub fn render(events: &[Event]) -> String {
         .join("\n")
 }
 
-fn render_event(event: &Event) -> String {
-    let presentation = EventPresentation::from(event);
-    let emoji = presentation.kind.emoji();
-    let text = render_presentation(&presentation);
+fn render_event(event: &EventPresentation) -> String {
+    let emoji = event.kind.emoji();
+    let text: String = event.fragments.iter().map(render_fragment).collect();
 
     format!("- {emoji} {text}")
-}
-
-fn render_presentation(presentation: &EventPresentation) -> String {
-    presentation.fragments.iter().map(render_fragment).collect()
 }
 
 fn render_fragment(part: &Fragment) -> String {
