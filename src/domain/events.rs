@@ -3,6 +3,7 @@
 use anyhow::ensure;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use std::collections::BTreeSet;
 
 #[derive(Clone, Copy)]
 pub struct EventLimit(usize);
@@ -34,6 +35,21 @@ pub struct Event {
     pub created_at: DateTime<Utc>,
 }
 
+impl Event {
+    pub fn kind(&self) -> EventKind {
+        match &self.payload {
+            EventPayload::Create(_) => EventKind::Create,
+            EventPayload::Delete(_) => EventKind::Delete,
+            EventPayload::IssueComment(_) => EventKind::IssueComment,
+            EventPayload::Issues(_) => EventKind::Issues,
+            EventPayload::PullRequest(_) => EventKind::PullRequest,
+            EventPayload::PullRequestReview(_) => EventKind::PullRequestReview,
+            EventPayload::Push(_) => EventKind::Push,
+            EventPayload::Release(_) => EventKind::Release,
+        }
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Repo {
     pub name: String,
@@ -47,6 +63,36 @@ impl Repo {
 
     pub fn url_for(&self, path: &str) -> String {
         format!("{}/{}", self.html_url(), path)
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd)]
+pub enum EventKind {
+    Create,
+    Delete,
+    IssueComment,
+    Issues,
+    PullRequest,
+    PullRequestReview,
+    Push,
+    Release,
+}
+
+pub struct EventKindFilter(BTreeSet<EventKind>);
+
+impl EventKindFilter {
+    pub fn from_event_kinds(event_kinds: impl IntoIterator<Item = EventKind>) -> Option<Self> {
+        let event_kinds = event_kinds.into_iter().collect::<BTreeSet<_>>();
+
+        if event_kinds.is_empty() {
+            return None;
+        }
+
+        Some(Self(event_kinds))
+    }
+
+    pub fn matches(&self, kind: EventKind) -> bool {
+        self.0.contains(&kind)
     }
 }
 

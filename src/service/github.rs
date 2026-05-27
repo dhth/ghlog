@@ -1,4 +1,4 @@
-use crate::domain::events::{Event, EventLimit, EventPayload, Repo};
+use crate::domain::events::{Event, EventKindFilter, EventLimit, EventPayload, Repo};
 use crate::domain::user::Username;
 use anyhow::{Context, ensure};
 use chrono::{DateTime, Utc};
@@ -87,6 +87,7 @@ impl GithubService {
         &self,
         username: &Username,
         limit: EventLimit,
+        event_kind_filter: Option<&EventKindFilter>,
     ) -> anyhow::Result<Vec<Event>> {
         let mut collected_events = Vec::new();
         let mut page = 1;
@@ -95,7 +96,14 @@ impl GithubService {
                 events,
                 has_next_page,
             } = self.fetch_public_events(username, page)?;
-            collected_events.extend(events);
+
+            for event in events {
+                if event_kind_filter.is_some_and(|filter| !filter.matches(event.kind())) {
+                    continue;
+                }
+
+                collected_events.push(event);
+            }
 
             if collected_events.len() >= limit.get() {
                 collected_events.truncate(limit.get());

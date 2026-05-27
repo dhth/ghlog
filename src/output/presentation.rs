@@ -1,4 +1,4 @@
-use crate::domain::events::{Event, EventPayload, PullRequest, ReleaseEvent};
+use crate::domain::events::{Event, EventKind, EventPayload, PullRequest, ReleaseEvent};
 use chrono::{DateTime, Utc};
 
 pub struct Fragment {
@@ -17,54 +17,42 @@ pub enum Color {
     Red,
 }
 
-#[derive(Clone, Copy)]
-pub enum EventKind {
-    Push,
-    Create,
-    Delete,
-    Issues,
-    IssueComment,
-    PullRequest,
-    PullRequestReview,
-    Release,
-}
-
 impl EventKind {
     pub fn name(self) -> &'static str {
         match self {
-            Self::Push => "push",
             Self::Create => "create",
             Self::Delete => "delete",
-            Self::Issues => "issues",
             Self::IssueComment => "issue-comment",
+            Self::Issues => "issues",
             Self::PullRequest => "pull-request",
             Self::PullRequestReview => "pull-request-review",
+            Self::Push => "push",
             Self::Release => "release",
         }
     }
 
     pub fn emoji(self) -> &'static str {
         match self {
-            Self::Push => "⬆️",
             Self::Create => "🌱",
             Self::Delete => "🗑️",
-            Self::Issues => "❗",
             Self::IssueComment => "💬",
+            Self::Issues => "❗",
             Self::PullRequest => "🔀",
             Self::PullRequestReview => "📝",
+            Self::Push => "⬆️",
             Self::Release => "📦",
         }
     }
 
     pub fn color(self) -> Color {
         match self {
-            Self::Push => Color::Blue,
             Self::Create => Color::Green,
             Self::Delete => Color::Red,
-            Self::Issues => Color::Yellow,
             Self::IssueComment => Color::Yellow,
+            Self::Issues => Color::Yellow,
             Self::PullRequest => Color::Purple,
             Self::PullRequestReview => Color::Purple,
+            Self::Push => Color::Blue,
             Self::Release => Color::Green,
         }
     }
@@ -78,10 +66,13 @@ pub struct EventPresentation {
 
 impl From<&Event> for EventPresentation {
     fn from(event: &Event) -> Self {
+        let created_at = event.created_at;
+        let kind = event.kind();
+
         match &event.payload {
             EventPayload::Push(push) => Self {
-                created_at: event.created_at,
-                kind: EventKind::Push,
+                created_at,
+                kind,
                 fragments: vec![
                     text("pushed"),
                     link(
@@ -95,8 +86,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Create(create) => Self {
-                created_at: event.created_at,
-                kind: EventKind::Create,
+                created_at,
+                kind,
                 fragments: vec![
                     text("created"),
                     text(create.ref_type.to_string()),
@@ -106,8 +97,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Delete(delete) => Self {
-                created_at: event.created_at,
-                kind: EventKind::Delete,
+                created_at,
+                kind,
                 fragments: vec![
                     text("deleted"),
                     text(delete.ref_type.to_string()),
@@ -117,8 +108,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Issues(issue) => Self {
-                created_at: event.created_at,
-                kind: EventKind::Issues,
+                created_at,
+                kind,
                 fragments: vec![
                     text(issue.action.to_string()),
                     text("issue"),
@@ -132,8 +123,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::IssueComment(issue_comment) => Self {
-                created_at: event.created_at,
-                kind: EventKind::IssueComment,
+                created_at,
+                kind,
                 fragments: vec![
                     text("commented on issue"),
                     link_with_detail(
@@ -146,8 +137,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::PullRequest(pull_request) => Self {
-                created_at: event.created_at,
-                kind: EventKind::PullRequest,
+                created_at,
+                kind,
                 fragments: vec![
                     text(&pull_request.action),
                     text("pull request"),
@@ -161,8 +152,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::PullRequestReview(pull_request_review) => Self {
-                created_at: event.created_at,
-                kind: EventKind::PullRequestReview,
+                created_at,
+                kind,
                 fragments: vec![
                     link(
                         pull_request_review_verb(
@@ -182,8 +173,8 @@ impl From<&Event> for EventPresentation {
                 ],
             },
             EventPayload::Release(release_event) => Self {
-                created_at: event.created_at,
-                kind: EventKind::Release,
+                created_at,
+                kind,
                 fragments: vec![
                     text(release_event.action.to_string()),
                     text(release_kind(release_event)),

@@ -1,4 +1,4 @@
-use crate::domain::events::EventLimit;
+use crate::domain::events::{EventKindFilter, EventLimit};
 use crate::domain::user::Username;
 use crate::output::{self, OutputFormat};
 use crate::service::github::GithubService;
@@ -8,11 +8,12 @@ use chrono::Utc;
 pub fn handle(
     username: &Username,
     limit: EventLimit,
+    event_kind_filter: Option<&EventKindFilter>,
     output_format: OutputFormat,
 ) -> anyhow::Result<()> {
     let token = crate::auth::get_token()?;
     let service = GithubService::new(token)?;
-    let events = service.get_public_events_for_user(username, limit)?;
+    let events = service.get_public_events_for_user(username, limit, event_kind_filter)?;
 
     if events.is_empty() {
         return Ok(());
