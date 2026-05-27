@@ -1,9 +1,10 @@
-use crate::domain::events::{Event, EventPayload, ReleaseEvent};
+use crate::domain::events::{Event, EventPayload, PullRequest, ReleaseEvent};
 use chrono::{DateTime, Utc};
 
 pub struct Fragment {
     pub text: String,
     pub url: Option<String>,
+    pub detail: Option<String>,
 }
 
 #[derive(Clone, Copy)]
@@ -118,9 +119,10 @@ impl From<&Event> for EventPresentation {
                 kind: EventKind::Issues,
                 fragments: vec![
                     text(format!("{} issue ", issue.action)),
-                    link(
+                    link_with_detail(
                         format!("#{}", issue.issue.number),
                         issue.issue.html_url.clone(),
+                        issue.issue.title.to_string(),
                     ),
                     text(" in "),
                     link(&event.repo.name, event.repo.html_url()),
@@ -131,9 +133,10 @@ impl From<&Event> for EventPresentation {
                 kind: EventKind::IssueComment,
                 fragments: vec![
                     text("commented on issue "),
-                    link(
+                    link_with_detail(
                         format!("#{}", issue_comment.issue.number),
                         issue_comment.issue.html_url.clone(),
+                        issue_comment.issue.title.to_string(),
                     ),
                     text(" in "),
                     link(&event.repo.name, event.repo.html_url()),
@@ -143,10 +146,12 @@ impl From<&Event> for EventPresentation {
                 created_at: event.created_at,
                 kind: EventKind::PullRequest,
                 fragments: vec![
-                    text(format!("{} pull request ", pull_request.action)),
-                    link(
+                    text(&pull_request.action),
+                    text(" pull request "),
+                    link_with_detail(
                         format!("#{}", pull_request.pull_request.number),
                         event.repo.url_for(&pull_request.pull_request.path()),
+                        pull_request_refs(&pull_request.pull_request),
                     ),
                     text(" in "),
                     link(&event.repo.name, event.repo.html_url()),
@@ -164,9 +169,10 @@ impl From<&Event> for EventPresentation {
                         pull_request_review.review.html_url.clone(),
                     ),
                     text(" pull request "),
-                    link(
+                    link_with_detail(
                         format!("#{}", pull_request_review.pull_request.number),
                         event.repo.url_for(&pull_request_review.pull_request.path()),
+                        pull_request_refs(&pull_request_review.pull_request),
                     ),
                     text(" in "),
                     link(&event.repo.name, event.repo.html_url()),
@@ -197,6 +203,7 @@ fn text(text: impl Into<String>) -> Fragment {
     Fragment {
         text: text.into(),
         url: None,
+        detail: None,
     }
 }
 
@@ -204,7 +211,30 @@ fn link(text: impl Into<String>, url: impl Into<String>) -> Fragment {
     Fragment {
         text: text.into(),
         url: Some(url.into()),
+        detail: None,
     }
+}
+
+fn link_with_detail(
+    text: impl Into<String>,
+    url: impl Into<String>,
+    detail: impl Into<String>,
+) -> Fragment {
+    Fragment {
+        text: text.into(),
+        url: Some(url.into()),
+        detail: Some(detail.into()),
+    }
+}
+
+fn pull_request_refs(pull_request: &PullRequest) -> String {
+    format!(
+        "{}:{} ← {}:{}",
+        pull_request.base.repo.name,
+        pull_request.base.git_ref,
+        pull_request.head.repo.name,
+        pull_request.head.git_ref,
+    )
 }
 
 fn release_kind(release_event: &ReleaseEvent) -> &'static str {
