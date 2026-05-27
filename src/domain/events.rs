@@ -3,6 +3,7 @@
 use anyhow::ensure;
 use chrono::{DateTime, Utc};
 use serde::Deserialize;
+use std::collections::BTreeSet;
 
 #[derive(Clone, Copy)]
 pub struct EventLimit(usize);
@@ -75,6 +76,24 @@ pub enum EventKind {
     PullRequestReview,
     Push,
     Release,
+}
+
+pub struct EventKindFilter(BTreeSet<EventKind>);
+
+impl EventKindFilter {
+    pub fn from_event_kinds(event_kinds: impl IntoIterator<Item = EventKind>) -> Option<Self> {
+        let event_kinds = event_kinds.into_iter().collect::<BTreeSet<_>>();
+
+        if event_kinds.is_empty() {
+            return None;
+        }
+
+        Some(Self(event_kinds))
+    }
+
+    pub fn matches(&self, kind: EventKind) -> bool {
+        self.0.contains(&kind)
+    }
 }
 
 #[derive(Debug)]
