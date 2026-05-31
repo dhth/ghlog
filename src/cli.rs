@@ -32,6 +32,9 @@ pub enum Command {
         /// HTML template to use
         #[arg(long = "html-template", value_enum, value_name = "TEMPLATE", default_value_t = HtmlTemplate::Terminal)]
         html_template: HtmlTemplate,
+        /// Include private events when visible to the authenticated user
+        #[arg(short = 'p', long = "include-private")]
+        include_private: bool,
     },
 }
 

@@ -4,7 +4,7 @@ mod plain;
 mod presentation;
 mod terminal;
 
-use crate::domain::events::Event;
+use crate::domain::events::{Event, EventVisibility};
 use crate::domain::user::Username;
 use chrono::{DateTime, Utc};
 use presentation::EventPresentation;
@@ -30,6 +30,7 @@ pub fn render(
     reference_time: DateTime<Utc>,
     format: OutputFormat,
     username: &Username,
+    event_visibility: EventVisibility,
 ) -> anyhow::Result<String> {
     let events = events
         .iter()
@@ -38,7 +39,7 @@ pub fn render(
 
     let output = match format {
         OutputFormat::Html { template } => {
-            html::render(events, reference_time, template, username)?
+            html::render(events, reference_time, template, username, event_visibility)?
         }
         OutputFormat::Markdown => markdown::render(events),
         OutputFormat::Plain => plain::render(events, reference_time),

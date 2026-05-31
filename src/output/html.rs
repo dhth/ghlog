@@ -1,5 +1,6 @@
 use super::HtmlTemplate;
 use super::presentation::EventPresentation;
+use crate::domain::events::EventVisibility;
 use crate::domain::user::Username;
 use anyhow::Context;
 use chrono::{DateTime, Utc};
@@ -13,10 +14,10 @@ const TEMPLATE_ZINE: &str = include_str!("./assets/templates/zine.html");
 
 #[derive(Serialize)]
 struct HtmlContext {
+    activity_label: String,
     branding: Branding,
     events: Vec<HtmlEvent>,
     timestamp: String,
-    title: String,
     user_url: String,
     username: String,
 }
@@ -64,6 +65,7 @@ pub fn render(
     reference_time: DateTime<Utc>,
     html_template: HtmlTemplate,
     username: &Username,
+    event_visibility: EventVisibility,
 ) -> anyhow::Result<String> {
     let branding = Branding {
         tool_name: "ghlog".to_owned(),
@@ -74,11 +76,16 @@ pub fn render(
     tera.add_raw_template("template.html", template_contents(html_template))
         .context("failed to parse built-in HTML template")?;
 
+    let activity_label = match event_visibility {
+        EventVisibility::PublicOnly => "recent public activity",
+        EventVisibility::IncludePrivate => "recent activity",
+    };
+
     let tera_context = TeraContext::from_serialize(HtmlContext {
+        activity_label: activity_label.to_owned(),
         branding,
         events: events.into_iter().map(HtmlEvent::from).collect(),
         timestamp: reference_time.format("%-d %b %Y · %H:%M UTC").to_string(),
-        title: format!("@{} recent activity", username.as_str()),
         user_url: format!("https://github.com/{}", username.as_str()),
         username: username.as_str().to_owned(),
     })
