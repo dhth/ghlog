@@ -1,5 +1,5 @@
 use crate::cli::EventType;
-use crate::domain::events::{EventKind, EventKindFilter, EventLimit};
+use crate::domain::events::{EventKind, EventKindFilter, EventLimit, EventVisibility};
 use crate::domain::user::Username;
 use crate::output::{HtmlTemplate, OutputFormat};
 
@@ -8,6 +8,7 @@ pub enum Command {
         event_kind_filter: Option<EventKindFilter>,
         username: Username,
         limit: EventLimit,
+        event_visibility: EventVisibility,
         output_format: OutputFormat,
     },
 }
@@ -23,12 +24,18 @@ impl TryFrom<crate::cli::Command> for Command {
                 limit,
                 output_format,
                 html_template,
+                include_private,
             } => Ok(Self::Run {
                 event_kind_filter: EventKindFilter::from_event_kinds(
                     event_types.into_iter().map(EventKind::from_cli),
                 ),
                 username: Username::try_from(username)?,
                 limit: EventLimit::try_from(limit)?,
+                event_visibility: if include_private {
+                    EventVisibility::IncludePrivate
+                } else {
+                    EventVisibility::PublicOnly
+                },
                 output_format: OutputFormat::from_cli(output_format, html_template),
             }),
         }
@@ -42,8 +49,15 @@ impl Command {
                 event_kind_filter,
                 username,
                 limit,
+                event_visibility,
                 output_format,
-            } => super::run::handle(&username, limit, event_kind_filter.as_ref(), output_format),
+            } => super::run::handle(
+                &username,
+                limit,
+                event_kind_filter.as_ref(),
+                event_visibility,
+                output_format,
+            ),
         }
     }
 }

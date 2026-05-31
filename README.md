@@ -48,6 +48,7 @@ Options:
   -l, --limit <LIMIT>             Maximum number of events to show [default: 20]
   -f, --format <FORMAT>           Output format to use [default: terminal] [possible values: html, markdown, plain, terminal]
       --html-template <TEMPLATE>  HTML template to use [default: terminal] [possible values: editorial, notebook, terminal, zine]
+  -p, --include-private           Include private events when visible to the authenticated user
   -h, --help                      Print help (see more with '--help')
 ```
 

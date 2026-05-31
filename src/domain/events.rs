@@ -27,6 +27,12 @@ impl TryFrom<usize> for EventLimit {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum EventVisibility {
+    PublicOnly,
+    IncludePrivate,
+}
+
 #[derive(Debug)]
 pub struct Event {
     pub id: String,

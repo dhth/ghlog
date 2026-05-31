@@ -1,4 +1,6 @@
-use crate::domain::events::{Event, EventKindFilter, EventLimit, EventPayload, Repo};
+use crate::domain::events::{
+    Event, EventKindFilter, EventLimit, EventPayload, EventVisibility, Repo,
+};
 use crate::domain::user::Username;
 use anyhow::{Context, ensure};
 use chrono::{DateTime, Utc};
@@ -6,6 +8,7 @@ use reqwest::blocking::Client;
 use reqwest::header::{HeaderMap, LINK};
 use serde::Deserialize;
 
+const GITHUB_API_BASE: &str = "https://api.github.com";
 const GITHUB_API_VERSION: &str = "2026-03-10";
 const GITHUB_API_MAX_PER_PAGE: usize = 100;
 
@@ -83,11 +86,12 @@ impl GithubService {
         Ok(Self { client, token })
     }
 
-    pub fn get_public_events_for_user(
+    pub fn get_events_for_user(
         &self,
         username: &Username,
         limit: EventLimit,
         event_kind_filter: Option<&EventKindFilter>,
+        event_visibility: EventVisibility,
     ) -> anyhow::Result<Vec<Event>> {
         let mut collected_events = Vec::new();
         let mut page = 1;
@@ -95,7 +99,7 @@ impl GithubService {
             let GithubPage {
                 events,
                 has_next_page,
-            } = self.fetch_public_events(username, page)?;
+            } = self.fetch_events(username, page, event_visibility)?;
 
             for event in events {
                 if event_kind_filter.is_some_and(|filter| !filter.matches(event.kind())) {
@@ -120,12 +124,24 @@ impl GithubService {
         Ok(collected_events)
     }
 
-    fn fetch_public_events(&self, username: &Username, page: usize) -> anyhow::Result<GithubPage> {
+    fn fetch_events(
+        &self,
+        username: &Username,
+        page: usize,
+        event_visibility: EventVisibility,
+    ) -> anyhow::Result<GithubPage> {
+        let path = match event_visibility {
+            EventVisibility::PublicOnly => "events/public",
+            EventVisibility::IncludePrivate => "events",
+        };
+
         let response = self
             .client
             .get(format!(
-                "https://api.github.com/users/{}/events/public",
-                username.as_str()
+                "{}/users/{}/{}",
+                GITHUB_API_BASE,
+                username.as_str(),
+                path,
             ))
             .header("Accept", "application/vnd.github+json")
             .header("X-GitHub-Api-Version", GITHUB_API_VERSION)

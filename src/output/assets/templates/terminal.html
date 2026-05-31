@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔭</text></svg>">
-    <title>{{ title }}</title>
+    <title>@{{ username }}'s {{ activity_label }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -171,7 +171,7 @@
         <div class="term">
             <div class="term-bar">
                 <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
-                <span class="term-title"><a href="{{ user_url }}" target="_blank" rel="noopener noreferrer">@{{ username }}</a>'s recent activity</span>
+                <span class="term-title"><a href="{{ user_url }}" target="_blank" rel="noopener noreferrer">@{{ username }}</a>'s {{ activity_label }}</span>
             </div>
             <div class="term-body">
                 <div class="prompt-line">
