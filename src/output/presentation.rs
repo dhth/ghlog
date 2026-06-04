@@ -22,7 +22,7 @@ impl EventKind {
         match self {
             Self::Create => "create",
             Self::Delete => "delete",
-            Self::IssueComment => "issue-comment",
+            Self::IssueComment => "comment",
             Self::Issues => "issues",
             Self::PullRequest => "pull-request",
             Self::PullRequestReview => "pull-request-review",

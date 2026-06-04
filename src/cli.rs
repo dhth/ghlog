@@ -42,7 +42,7 @@ pub enum Command {
 pub enum EventType {
     Create,
     Delete,
-    IssueComment,
+    Comment,
     Issues,
     PullRequest,
     PullRequestReview,

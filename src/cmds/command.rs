@@ -80,7 +80,7 @@ impl EventKind {
         match value {
             EventType::Create => Self::Create,
             EventType::Delete => Self::Delete,
-            EventType::IssueComment => Self::IssueComment,
+            EventType::Comment => Self::IssueComment,
             EventType::Issues => Self::Issues,
             EventType::PullRequest => Self::PullRequest,
             EventType::PullRequestReview => Self::PullRequestReview,
