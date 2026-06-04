@@ -180,8 +180,7 @@ pub struct IssueCommentEvent {
 }
 
 impl IssueCommentEvent {
-    /// GitHub uses IssueCommentEvent for comments on both issues and pull request
-    /// conversation threads.
+    /// GitHub uses IssueCommentEvent for comments on both issues and pull requests
     pub fn is_on_pull_request(&self) -> bool {
         self.issue.pull_request.is_some()
     }

@@ -40,9 +40,9 @@ pub enum Command {
 
 #[derive(Clone, Copy, Debug, ValueEnum)]
 pub enum EventType {
+    Comment,
     Create,
     Delete,
-    Comment,
     Issues,
     PullRequest,
     PullRequestReview,
