@@ -126,10 +126,11 @@ impl From<&Event> for EventPresentation {
                 created_at,
                 kind,
                 fragments: vec![
+                    link("commented on", issue_comment.comment.html_url.clone()),
                     text(if issue_comment.is_on_pull_request() {
-                        "commented on pull request"
+                        "pull request"
                     } else {
-                        "commented on issue"
+                        "issue"
                     }),
                     link_with_detail(
                         format!("#{}", issue_comment.issue.number),
