@@ -179,12 +179,24 @@ pub struct IssueCommentEvent {
     pub comment: IssueCommentComment,
 }
 
+impl IssueCommentEvent {
+    /// GitHub uses IssueCommentEvent for comments on both issues and pull request
+    /// conversation threads.
+    pub fn is_on_pull_request(&self) -> bool {
+        self.issue.pull_request.is_some()
+    }
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Issue {
     pub number: u64,
     pub title: String,
     pub html_url: String,
+    pull_request: Option<IssuePullRequestMarker>,
 }
+
+#[derive(Debug, Deserialize)]
+struct IssuePullRequestMarker {}
 
 #[derive(Debug, Deserialize)]
 pub struct IssueCommentComment {
