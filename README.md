@@ -44,7 +44,7 @@ Arguments:
   <USERNAME>  GitHub username to run for
 
 Options:
-  -e, --event-type <EVENT_TYPE>   Filter by event type; repeat to include multiple types. Limit applies after filtering [possible values: create, delete, issue-comment, issues, pull-request, pull-request-review, push, release]
+  -e, --event-type <EVENT_TYPE>   Filter by event type; repeat to include multiple types. Limit applies after filtering [possible values: comment, create, delete, issues, pull-request, pull-request-review, push, release]
   -l, --limit <LIMIT>             Maximum number of events to show [default: 20]
   -f, --format <FORMAT>           Output format to use [default: terminal] [possible values: html, markdown, plain, terminal]
       --html-template <TEMPLATE>  HTML template to use [default: terminal] [possible values: editorial, notebook, terminal, zine]

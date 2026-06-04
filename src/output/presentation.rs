@@ -22,7 +22,7 @@ impl EventKind {
         match self {
             Self::Create => "create",
             Self::Delete => "delete",
-            Self::IssueComment => "issue-comment",
+            Self::IssueComment => "comment",
             Self::Issues => "issues",
             Self::PullRequest => "pull-request",
             Self::PullRequestReview => "pull-request-review",
@@ -126,7 +126,11 @@ impl From<&Event> for EventPresentation {
                 created_at,
                 kind,
                 fragments: vec![
-                    text("commented on issue"),
+                    text(if issue_comment.is_on_pull_request() {
+                        "commented on pull request"
+                    } else {
+                        "commented on issue"
+                    }),
                     link_with_detail(
                         format!("#{}", issue_comment.issue.number),
                         issue_comment.issue.html_url.clone(),
