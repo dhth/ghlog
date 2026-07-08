@@ -15,6 +15,7 @@ categories = [
 ]
 exclude = [
     ".github",
+    "deny.toml",
     "justfile",
 ]
 
@@ -30,3 +31,12 @@ tera = { version = "1.20.1", default-features = false }
 [lints.clippy]
 unwrap_used = "deny"
 expect_used = "deny"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+strip = "symbols"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
