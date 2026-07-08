@@ -21,4 +21,3 @@ publish-jobs = ["homebrew", "./publish-crates"]
 github-custom-job-permissions = { "publish-crates" = { contents = "read", id-token = "write" } }
 # Whether to install an updater program
 install-updater = false
-pr-run-mode = "upload"
