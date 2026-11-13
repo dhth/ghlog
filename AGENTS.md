@@ -3,10 +3,7 @@
 - The tool stays intentionally narrow: a small supported event set, thin command handlers, and format-specific rendering under `src/output/`.
 
 ## Common Commands
-- Prefer `just` over raw `cargo` commands.
-- Check: `just check`
-- Run the CLI: `just run <flags>`
-- Inspect available recipes: `just --list`
+Read `mise.toml` for available development tasks and tools.
 
 ## Key Conventions
 - When adding a new event, update parsing in `src/domain/events.rs` and every renderer that exposes event-specific copy.
