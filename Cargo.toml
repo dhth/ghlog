@@ -16,7 +16,6 @@ categories = [
 exclude = [
     ".github",
     "deny.toml",
-    "justfile",
 ]
 
 [dependencies]
